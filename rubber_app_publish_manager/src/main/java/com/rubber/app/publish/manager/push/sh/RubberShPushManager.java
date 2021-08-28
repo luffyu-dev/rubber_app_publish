@@ -31,7 +31,7 @@ public class RubberShPushManager implements RubberPushManager {
      * @throws IOException
      */
     public static Connection login(String ip, String userName, String password) throws IOException {
-        Connection connection = new Connection(ip);
+        Connection connection = new Connection(ip,22001);
         connection.connect();
         return connection.authenticateWithPassword(userName, password) ? connection : null;
     }
@@ -98,7 +98,9 @@ public class RubberShPushManager implements RubberPushManager {
 
 
     public static void main(String[] args) throws IOException {
-        exec("1.116.15.151","root","Ygf@337733","/home/application/test", StandardCharsets.UTF_8);
+        //onnection connection = login("1.116.15.151","root","Ygf@337733");
+        //System.out.println(connection);
+        exec("1.116.15.151","root","Ygf@337733","scp -p 22 ${filen} ${user}@${ip}:${dir}", StandardCharsets.UTF_8);
     }
 
 

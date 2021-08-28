@@ -92,11 +92,11 @@ public class RubberJenkinsPackManager extends RubberBasePackManager {
 
 
     public static void main(String[] args) throws URISyntaxException {
-        JenkinsServer jenkinsServer = new JenkinsServer(new URI("http://127.0.0.1:38080"), "admin", "11cbebe5da3a035294954afbc4d907d173");
+        JenkinsServer jenkinsServer = new JenkinsServer(new URI("http://oa.jenkins.luffyu.cn"), "admin", "11d6d17b03e25d89254cf4e136c683901b");
         RubberJenkinsPackManager rubberJenkinsPackManager = new RubberJenkinsPackManager(jenkinsServer);
         AppPackDto appPackDto = new AppPackDto();
-        appPackDto.setAppName("hotel_data_dock_project");
-        appPackDto.setGitHubUrl("https://github.com/luffyu/hotel_data_dock_project.git");
+        appPackDto.setAppName("rubber_common_utils");
+        appPackDto.setGitHubUrl("https://github.com/luffyu-dev/rubber_common_utils.git");
         rubberJenkinsPackManager.pack(appPackDto);
     }
 
