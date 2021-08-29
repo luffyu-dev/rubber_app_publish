@@ -9,6 +9,7 @@ import com.rubber.app.publish.core.exception.AppPublishParamException;
 import com.rubber.app.publish.core.mapper.ApplicationConfigInfoMapper;
 import com.rubber.app.publish.core.service.IApplicationConfigInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.rubber.base.components.mysql.plugins.admin.BaseAdminService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ import java.time.LocalDateTime;
  * @since 2021-08-27
  */
 @Service
-public class ApplicationConfigInfoServiceImpl extends ServiceImpl<ApplicationConfigInfoMapper, ApplicationConfigInfo> implements IApplicationConfigInfoService {
+public class ApplicationConfigInfoServiceImpl extends BaseAdminService<ApplicationConfigInfoMapper, ApplicationConfigInfo> implements IApplicationConfigInfoService {
 
 
     /**

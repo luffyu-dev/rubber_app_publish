@@ -1,6 +1,8 @@
 package com.rubber.app.publish.core.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.app.publish.core.constant.ErrCodeEnums;
 import com.rubber.app.publish.core.constant.PushStatusEnums;
 import com.rubber.app.publish.core.entity.ApplicationServerInfo;
@@ -10,11 +12,14 @@ import com.rubber.app.publish.core.service.IApplicationConfigInfoService;
 import com.rubber.app.publish.core.service.IApplicationServerInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.rubber.app.publish.core.service.IServerDeviceInfoService;
+import com.rubber.base.components.mysql.plugins.admin.BaseAdminService;
 import com.rubber.common.utils.enums.EnvEnum;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -25,7 +30,7 @@ import java.time.LocalDateTime;
  * @since 2021-08-27
  */
 @Service
-public class ApplicationServerInfoServiceImpl extends ServiceImpl<ApplicationServerInfoMapper, ApplicationServerInfo> implements IApplicationServerInfoService {
+public class ApplicationServerInfoServiceImpl extends BaseAdminService<ApplicationServerInfoMapper, ApplicationServerInfo> implements IApplicationServerInfoService {
 
     @Resource
     private IServerDeviceInfoService iServerDeviceInfoService;
@@ -68,7 +73,7 @@ public class ApplicationServerInfoServiceImpl extends ServiceImpl<ApplicationSer
         if (iServerDeviceInfoService.getByServerKey(entity.getServerKey()) == null){
             throw new AppPublishParamException(ErrCodeEnums.DATA_IS_NOT_EXIST,"服务资源{}不存在",entity.getAppName());
         }
-        entity.setPushStatus(PushStatusEnums.WAIT_PACK.getCode());
+        //entity.setPushStatus(PushStatusEnums.WAIT_PACK.getCode());
         if (entity.getCreateTime() != null){
             entity.setCreateTime(LocalDateTime.now());
         }
@@ -78,4 +83,19 @@ public class ApplicationServerInfoServiceImpl extends ServiceImpl<ApplicationSer
     }
 
 
+    /**
+     * 查询相关配置信息
+     *
+     * @param appName
+     * @param env
+     */
+    @Override
+    public List<ApplicationServerInfo> queryByAppNameAndEnv(String appName, Set<Integer> env) {
+        QueryWrapper<ApplicationServerInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("app_name",appName);
+        if (CollUtil.isNotEmpty(env)){
+            queryWrapper.in("app_env",env);
+        }
+        return list(queryWrapper);
+    }
 }

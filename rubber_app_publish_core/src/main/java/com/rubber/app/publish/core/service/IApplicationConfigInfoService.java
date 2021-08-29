@@ -2,6 +2,7 @@ package com.rubber.app.publish.core.service;
 
 import com.rubber.app.publish.core.entity.ApplicationConfigInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.rubber.base.components.mysql.plugins.admin.IBaseAdminService;
 
 /**
  * <p>
@@ -11,7 +12,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author luffyu
  * @since 2021-08-27
  */
-public interface IApplicationConfigInfoService extends IService<ApplicationConfigInfo> {
+public interface IApplicationConfigInfoService extends IBaseAdminService<ApplicationConfigInfo> {
 
 
     /**

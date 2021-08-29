@@ -1,7 +1,11 @@
 package com.rubber.app.publish.core.service;
 
+import com.rubber.app.publish.core.constant.ServerDeviceTypeEnums;
 import com.rubber.app.publish.core.entity.ServerDeviceInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.rubber.base.components.mysql.plugins.admin.IBaseAdminService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -11,7 +15,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author luffyu
  * @since 2021-08-27
  */
-public interface IServerDeviceInfoService extends IService<ServerDeviceInfo> {
+public interface IServerDeviceInfoService extends IBaseAdminService<ServerDeviceInfo> {
 
     /**
      * 通过ip和端口查询
@@ -27,5 +31,13 @@ public interface IServerDeviceInfoService extends IService<ServerDeviceInfo> {
      * @return 返回设备信息
      */
     ServerDeviceInfo getByServerKey(String serverKey);
+
+
+    /**
+     * 通过服务类型查询服务设备信息
+     * @param deviceType 当前的服务类型
+     * @return 返回服务设备信息
+     */
+    List<ServerDeviceInfo> queryByServerType(ServerDeviceTypeEnums deviceType);
 
 }

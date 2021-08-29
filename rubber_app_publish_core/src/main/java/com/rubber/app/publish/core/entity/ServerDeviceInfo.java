@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.Version;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.rubber.base.components.mysql.plugins.admin.bean.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,7 +22,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("t_server_device_info")
-public class ServerDeviceInfo implements Serializable {
+public class ServerDeviceInfo extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -53,7 +55,23 @@ public class ServerDeviceInfo implements Serializable {
     /**
      * 服务器端口
      */
-    private Integer serverPort;
+    private Integer serverShPort;
+
+    /**
+     * 服务器的用户
+     */
+    private String serverShUser;
+
+    /**
+     * 服务器的密码
+     */
+    private String serverShPsd;
+
+
+    /**
+     * 服务器的地址
+     */
+    private String serverUrl;
 
     /**
      * 服务的登录账户名

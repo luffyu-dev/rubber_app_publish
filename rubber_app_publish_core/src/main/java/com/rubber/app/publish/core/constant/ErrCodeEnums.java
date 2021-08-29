@@ -25,6 +25,7 @@ public enum ErrCodeEnums implements ICodeHandle {
     DEVICE_IS_EXIST("3020000", "设备已经存在"),
     DATA_IS_EXIST("3020000", "数据已经存在"),
     DATA_IS_NOT_EXIST("3020000", "数据不存在"),
+    INIT_ERROR("3020000", "初始化数据错误"),
 
 
 

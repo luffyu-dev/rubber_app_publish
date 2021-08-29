@@ -1,0 +1,17 @@
+server:
+  port: 38002
+
+
+
+spring:
+  application:
+    name: rubber-app-publish
+  cloud:
+    nacos:
+      config:
+        file-extension: yml
+
+rubber:
+  proxy:
+    set:
+      dbInstance: oaAdminInstance

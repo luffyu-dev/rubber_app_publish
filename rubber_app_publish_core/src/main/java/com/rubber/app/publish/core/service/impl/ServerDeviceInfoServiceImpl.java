@@ -6,15 +6,17 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.rubber.app.publish.core.constant.ErrCodeEnums;
+import com.rubber.app.publish.core.constant.ServerDeviceTypeEnums;
 import com.rubber.app.publish.core.constant.ServerStatusEnums;
 import com.rubber.app.publish.core.entity.ServerDeviceInfo;
 import com.rubber.app.publish.core.exception.AppPublishParamException;
 import com.rubber.app.publish.core.mapper.ServerDeviceInfoMapper;
 import com.rubber.app.publish.core.service.IServerDeviceInfoService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.rubber.base.components.mysql.plugins.admin.BaseAdminService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -25,7 +27,7 @@ import java.time.LocalDateTime;
  * @since 2021-08-27
  */
 @Service
-public class ServerDeviceInfoServiceImpl extends ServiceImpl<ServerDeviceInfoMapper, ServerDeviceInfo> implements IServerDeviceInfoService {
+public class ServerDeviceInfoServiceImpl extends BaseAdminService<ServerDeviceInfoMapper, ServerDeviceInfo> implements IServerDeviceInfoService {
 
 
     /**
@@ -78,17 +80,32 @@ public class ServerDeviceInfoServiceImpl extends ServiceImpl<ServerDeviceInfoMap
         return getOne(queryWrapper);
     }
 
+    /**
+     * 通过服务类型查询服务设备信息
+     *
+     * @param deviceTypeEnums 当前的服务类型
+     * @return 返回服务设备信息
+     */
+    @Override
+    public List<ServerDeviceInfo> queryByServerType(ServerDeviceTypeEnums deviceTypeEnums) {
+        if (deviceTypeEnums == null){
+            return null;
+        }
+        QueryWrapper<ServerDeviceInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("server_type",deviceTypeEnums.getKey());
+        return list(queryWrapper);
+    }
 
 
     /**
      * 保存之前的操作
      */
     private void doPreSave(ServerDeviceInfo entity){
-        if (StrUtil.isEmpty(entity.getServerIp()) || entity.getServerPort() == null){
+        if (StrUtil.isEmpty(entity.getServerIp()) || entity.getServerShPort() == null){
             throw new AppPublishParamException(ErrCodeEnums.PARAM_ERROR,"设备的ip和端口不能为空");
         }
-        if (getByIpPort(entity.getServerIp(),entity.getServerPort()) != null){
-            throw new AppPublishParamException(ErrCodeEnums.DEVICE_IS_EXIST,"设备的ip{}和端口{}已经存在为空",entity.getServerIp(),entity.getServerPort());
+        if (getByIpPort(entity.getServerIp(),entity.getServerShPort()) != null){
+            throw new AppPublishParamException(ErrCodeEnums.DEVICE_IS_EXIST,"设备的ip{}和端口{}已经存在为空",entity.getServerIp(),entity.getServerShPort());
         }
         if (StrUtil.isEmpty(entity.getServerKey())){
             //doCreat

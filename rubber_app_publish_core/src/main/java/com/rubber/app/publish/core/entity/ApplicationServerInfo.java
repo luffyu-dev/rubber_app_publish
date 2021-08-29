@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.Version;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.rubber.base.components.mysql.plugins.admin.bean.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,15 +22,15 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("t_application_server_info")
-public class ApplicationServerInfo implements Serializable {
+public class ApplicationServerInfo extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * 自增id
      */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    @TableId(value = "application_id", type = IdType.AUTO)
+    private Integer applicationId;
 
     /**
      * 应用名称
@@ -54,11 +56,6 @@ public class ApplicationServerInfo implements Serializable {
      * 当前服务状态 10表示正常 20表示停用
      */
     private Integer appServerStatus;
-
-    /**
-     * 发布状态 10表示待打包  20表待推送  30表示待发布
-     */
-    private Integer pushStatus;
 
     /**
      * 扩展参数信息

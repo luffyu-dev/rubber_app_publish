@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.Version;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.rubber.base.components.mysql.plugins.admin.bean.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,7 +22,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("t_application_config_info")
-public class ApplicationConfigInfo implements Serializable {
+public class ApplicationConfigInfo extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
