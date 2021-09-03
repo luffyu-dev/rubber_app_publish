@@ -4,9 +4,7 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.XmlUtil;
 import com.offbytwo.jenkins.JenkinsServer;
-import com.offbytwo.jenkins.model.JobWithDetails;
-import com.offbytwo.jenkins.model.QueueItem;
-import com.offbytwo.jenkins.model.QueueReference;
+import com.offbytwo.jenkins.model.*;
 import com.rubber.app.publish.core.constant.PushStatusEnums;
 import com.rubber.app.publish.logic.manager.pack.RubberPackManager;
 import com.rubber.app.publish.logic.manager.pack.config.JenkinsBeanServer;
@@ -22,6 +20,7 @@ import org.w3c.dom.Document;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,42 +74,87 @@ public class RubberJenkinsPackManager implements RubberPackManager {
         AppPackStatusDto response = new AppPackStatusDto();
         JenkinsBeanServer jenkinsBeanServer  =  jenkinsServerProvider.getJenkinsServer(appPackStatusDto.getJenkinsServerKey());
         JenkinsServer jenkinsServer = jenkinsBeanServer.getJenkinsServer();
-
-        try {
-            QueueItem queueItem = jenkinsServer.getQueueItem(new QueueReference(appPackStatusDto.getExecUrl()));
-            if (queueItem.getExecutable() != null){
-                response.setNowStatus(PushStatusEnums.PACKING);
-                response.setExecUrl(queueItem.getExecutable().getUrl());
-                response.setExecNum(queueItem.getExecutable().getNumber());
-                log.info("用户已经进入到打包流程");
-            }
-
-        }catch (Exception e){
-
+        if (PushStatusEnums.START_PACK.equals(appPackStatusDto.getPreStatus())){
+            getStatusForStartPack(jenkinsServer,appPackStatusDto);
+        }
+        if (PushStatusEnums.PACKING.equals(appPackStatusDto.getPreStatus())){
+            //打包状态，查看打包中的数据
+            getPackResult(jenkinsServer,appPackStatusDto);
         }
         return response;
     }
 
+
+    @Override
+    public String getPackLog(AppPackStatusDto appPackStatusDto) {
+        JenkinsBeanServer jenkinsBeanServer  =  jenkinsServerProvider.getJenkinsServer(appPackStatusDto.getJenkinsServerKey());
+        JenkinsServer jenkinsServer = jenkinsBeanServer.getJenkinsServer();
+        try {
+            QueueItem queueItem = new QueueItem();
+            Executable executable = new Executable();
+            executable.setUrl(appPackStatusDto.getExecUrl());
+            queueItem.setExecutable(executable);
+            Build build = jenkinsServer.getBuild(queueItem);
+            if (build != null) {
+                BuildWithDetails buildWithDetails = build.details();
+                return buildWithDetails.getConsoleOutputText();
+            }
+            return "";
+        }catch (Exception e){
+            return "";
+        }
+    }
+
+
+
     /**
-     *
-     * @param jenkinsServer
-     * @param appPackStatusDto
+     * 打包状态是否从队列中进入开始打包状态
      */
     private void getStatusForStartPack(JenkinsServer jenkinsServer,AppPackStatusDto appPackStatusDto){
         try {
             QueueItem queueItem = jenkinsServer.getQueueItem(new QueueReference(appPackStatusDto.getExecUrl()));
             if (queueItem.getExecutable() != null){
+                log.info("当前jenkins状态又队列状转换成了打包,jenkinsServer={},url={}",appPackStatusDto.getJenkinsServerKey(),appPackStatusDto.getExecUrl());
+                appPackStatusDto.setPreStatus(PushStatusEnums.PACKING);
                 appPackStatusDto.setNowStatus(PushStatusEnums.PACKING);
                 appPackStatusDto.setExecUrl(queueItem.getExecutable().getUrl());
                 appPackStatusDto.setExecNum(queueItem.getExecutable().getNumber());
                 log.info("用户已经进入到打包流程");
             }
         }catch (Exception e){
-            log.error("查询状态异常");
+            log.error("查询状态失败");
         }
     }
 
+    /**
+     * 打包状态是否从队列中出来
+     */
+    private void getPackResult(JenkinsServer jenkinsServer,AppPackStatusDto appPackStatusDto){
+        try {
+            QueueItem queueItem = new QueueItem();
+            Executable executable = new Executable();
+            executable.setUrl(appPackStatusDto.getExecUrl());
+            queueItem.setExecutable(executable);
+            Build build = jenkinsServer.getBuild(queueItem);
+            if (build != null){
+                BuildWithDetails buildWithDetails = build.details();
+                if (buildWithDetails != null){
+                    BuildResult buildResult = buildWithDetails.getResult();
+                    if (BuildResult.SUCCESS.equals(buildResult)){
+                        //打包成功
+                        appPackStatusDto.setPreStatus(PushStatusEnums.PACK_SUCCESS);
+                        appPackStatusDto.setNowStatus(PushStatusEnums.PACK_SUCCESS);
+                    }else if (BuildResult.FAILURE.equals(buildResult)){
+                        appPackStatusDto.setPreStatus(PushStatusEnums.PACK_ERROR);
+                        appPackStatusDto.setNowStatus(PushStatusEnums.PACK_ERROR);
+                    }
+                }
+            }
+        }catch (Exception e){
+            log.error("查询状态失败");
+        }
 
+    }
 
 
 
@@ -165,15 +209,19 @@ public class RubberJenkinsPackManager implements RubberPackManager {
     }
 
 
-    public static void main(String[] args) throws URISyntaxException {
-        //JenkinsServer jenkinsServer = new JenkinsServer(new URI("http://oa.jenkins.luffyu.cn"), "admin", "11d6d17b03e25d89254cf4e136c683901b");
-//        JenkinsServer jenkinsServer = new JenkinsServer(new URI("http://127.0.0.1:38080"), "admin", "11cbebe5da3a035294954afbc4d907d173");
-//
-//        RubberJenkinsPackManager rubberJenkinsPackManager = new RubberJenkinsPackManager(jenkinsServer);
-//        AppPackDto appPackDto = new AppPackDto();
-//        appPackDto.setAppName("rubber_common_utils");
-//        appPackDto.setGitHubUrl("https://github.com/luffyu-dev/rubber_common_utils.git");
-//        rubberJenkinsPackManager.pack(appPackDto);
+    public static void main(String[] args) throws Exception {
+        JenkinsServer jenkinsServer = new JenkinsServer(new URI("http://127.0.0.1:38080"), "admin", "11cbebe5da3a035294954afbc4d907d173");
+        QueueItem queueItem = jenkinsServer.getQueueItem(new QueueReference("http://127.0.0.1:38080/queue/item/41"));
+
+        Build build = jenkinsServer.getBuild(queueItem);
+        JobWithDetails jobWithDetails = jenkinsServer.getJob("hotel_data_dock_project");
+        Build build1 = jobWithDetails.getBuildByNumber(12);
+
+        System.out.println(queueItem);
+        String tt = "http://127.0.0.1:38080/job/hotel_data_dock_project/9/";
+        int number = 9;
+
+
     }
 
 

@@ -22,4 +22,6 @@ public interface RubberPackManager {
 
     AppPackStatusDto getPackStatus(AppPackStatusDto appPackStatusDto);
 
+
+    String getPackLog(AppPackStatusDto appPackStatusDto);
 }

@@ -1,6 +1,7 @@
 package com.rubber.app.publish.logic.service.task.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.offbytwo.jenkins.JenkinsServer;
 import com.rubber.app.publish.core.constant.ErrCodeEnums;
 import com.rubber.app.publish.core.constant.PushStatusEnums;
 import com.rubber.app.publish.core.entity.ApplicationConfigInfo;
@@ -15,6 +16,7 @@ import com.rubber.app.publish.logic.dto.AppPublishTaskDto;
 import com.rubber.app.publish.logic.exception.AppPublishException;
 import com.rubber.app.publish.logic.manager.pack.dto.AppPackDto;
 import com.rubber.app.publish.logic.manager.pack.dto.AppPackResponse;
+import com.rubber.app.publish.logic.manager.pack.dto.AppPackStatusDto;
 import com.rubber.app.publish.logic.manager.pack.jenkins.RubberJenkinsPackManager;
 import com.rubber.app.publish.logic.service.task.AppPublishTaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -118,6 +120,7 @@ public class AppPublishTaskServiceImpl implements AppPublishTaskService {
             publishTaskInfo.setTaskStatus(PushStatusEnums.START_PACK.getCode());
             publishTaskInfo.setJenkinsServerKey(appPackResponse.getJenkinsServerKey());
             publishTaskInfo.setJobUrl(appPackResponse.getQueueItem());
+            iPublishTaskInfoService.updateById(publishTaskInfo);
         }
         return appPackResponse;
     }
@@ -129,8 +132,46 @@ public class AppPublishTaskServiceImpl implements AppPublishTaskService {
      * @return
      */
     @Override
-    public Integer getPackStatus(Integer taskId) {
-        return null;
+    public Integer getTaskStatus(Integer taskId) {
+        PublishTaskInfo publishTaskInfo = iPublishTaskInfoService.getById(taskId);
+        if (publishTaskInfo == null){
+            throw new AppPublishException(ErrCodeEnums.DATA_IS_NOT_EXIST);
+        }
+        PushStatusEnums statusEnums = PushStatusEnums.getByCode(publishTaskInfo.getTaskStatus());
+        if (statusEnums == null){
+            return 0;
+        }
+        if (statusEnums.getCode() <  PushStatusEnums.WAIT_PUSH.getCode()){
+            AppPackStatusDto appPackStatusDto = new AppPackStatusDto();
+            appPackStatusDto.setPreStatus(statusEnums);
+            appPackStatusDto.setJenkinsServerKey(publishTaskInfo.getJenkinsServerKey());
+            appPackStatusDto.setExecUrl(publishTaskInfo.getJobUrl());
+            rubberJenkinsPackManager.getPackStatus(appPackStatusDto);
+            if (appPackStatusDto.getNowStatus() != null && appPackStatusDto.getNowStatus() != statusEnums){
+                publishTaskInfo.setJobUrl(appPackStatusDto.getExecUrl());
+                publishTaskInfo.setTaskStatus(appPackStatusDto.getNowStatus().getCode());
+                iPublishTaskInfoService.updateById(publishTaskInfo);
+            }
+        }
+        return publishTaskInfo.getTaskStatus();
+    }
+
+    /**
+     * 查询打包状态
+     *
+     * @param taskId 打包状态
+     * @return
+     */
+    @Override
+    public String getPackTaskLog(Integer taskId) {
+        PublishTaskInfo publishTaskInfo = iPublishTaskInfoService.getById(taskId);
+        if (publishTaskInfo == null){
+            throw new AppPublishException(ErrCodeEnums.DATA_IS_NOT_EXIST);
+        }
+        AppPackStatusDto appPackStatusDto = new AppPackStatusDto();
+        appPackStatusDto.setJenkinsServerKey(publishTaskInfo.getJenkinsServerKey());
+        appPackStatusDto.setExecUrl(publishTaskInfo.getJobUrl());
+        return rubberJenkinsPackManager.getPackLog(appPackStatusDto);
     }
 
 

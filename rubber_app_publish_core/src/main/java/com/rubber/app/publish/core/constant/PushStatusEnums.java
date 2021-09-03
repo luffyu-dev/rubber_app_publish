@@ -11,30 +11,45 @@ public enum  PushStatusEnums {
     /**
      * 发布状态
      */
-    WAIT_PACK(10,"待打包"),
-    START_PACK(11,"开始打包"),
-    PACKING(12,"打包中"),
-    PACK_SUCCESS(13,"已打包"),
-    PACK_ERROR(14,"打包失败"),
+    WAIT_PACK(10,"待打包",1),
+    START_PACK(11,"开始打包",1),
+    PACKING(12,"打包中",1),
+    PACK_SUCCESS(13,"已打包",1),
+    PACK_ERROR(14,"打包失败",1),
 
-    WAIT_PUSH(20,"待推送"),
-    PUSHING(21,"推送中"),
-    PUSHED(22,"已推送"),
+    WAIT_PUSH(20,"待推送",2),
+    PUSHING(21,"推送中",2),
+    PUSHED(22,"已推送",2),
 
-    WAIT_PUBLISH(30,"待发布"),
-    PUBLISHING(31,"发布中"),
-    PUBLISHED(32,"已发布"),
+    WAIT_PUBLISH(30,"待发布",3),
+    PUBLISHING(31,"发布中",3),
+    PUBLISHED(32,"已发布",3),
 
     ;
     private final Integer code;
 
     private final String label;
 
+    private final Integer type;
 
 
-    PushStatusEnums(Integer code, String label) {
+
+    PushStatusEnums(Integer code, String label,Integer type) {
         this.code = code;
         this.label = label;
+        this.type = type;
     }
 
+
+    public static PushStatusEnums getByCode(Integer code){
+        if (code == null){
+            return null;
+        }
+        for (PushStatusEnums pushStatusEnums:PushStatusEnums.values()){
+            if (pushStatusEnums.getCode().equals(code) ){
+                return pushStatusEnums;
+            }
+        }
+        return null;
+    }
 }

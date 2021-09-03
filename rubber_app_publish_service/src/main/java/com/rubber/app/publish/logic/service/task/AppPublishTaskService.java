@@ -33,6 +33,14 @@ public interface AppPublishTaskService {
      * @param taskId 打包状态
      * @return
      */
-    Integer getPackStatus(Integer taskId);
+    Integer getTaskStatus(Integer taskId);
+
+
+    /**
+     * 查询打包状态
+     * @param taskId 打包状态
+     * @return
+     */
+    String getPackTaskLog(Integer taskId);
 
 }

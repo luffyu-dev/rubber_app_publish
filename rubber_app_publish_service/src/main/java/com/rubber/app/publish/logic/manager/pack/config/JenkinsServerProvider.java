@@ -86,15 +86,5 @@ public class JenkinsServerProvider implements ApplicationContextAware {
         }
     }
 
-    private AppPackDto initBean(ApplicationConfigInfo applicationConfigInfo, ApplicationServerInfo applicationServerInfo){
-        AppPackDto appPackDto = new AppPackDto();
-        appPackDto.setAppName(applicationConfigInfo.getAppName());
-        appPackDto.setGitHubUrl(applicationConfigInfo.getGithubUrl());
-        appPackDto.setPackMavenPath(applicationConfigInfo.getMavenPath());
-        appPackDto.setGitTag(applicationServerInfo.getAppPackTag());
-        return appPackDto;
-    }
-
-
 
 }

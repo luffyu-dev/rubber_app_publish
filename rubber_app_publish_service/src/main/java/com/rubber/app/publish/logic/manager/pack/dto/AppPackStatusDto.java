@@ -12,9 +12,16 @@ public class AppPackStatusDto {
 
     private String jenkinsServerKey;
 
+    /**
+     * 前置的打包状态
+     */
+    private PushStatusEnums preStatus;
+
+    /**
+     * 当前的打包状态
+     */
     private PushStatusEnums nowStatus;
 
-    private PushStatusEnums nextStatus;
 
     private String execUrl;
 
