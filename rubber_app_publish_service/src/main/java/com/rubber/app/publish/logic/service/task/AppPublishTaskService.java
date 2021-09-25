@@ -1,8 +1,8 @@
 package com.rubber.app.publish.logic.service.task;
 
-import com.alibaba.fastjson.JSON;
 import com.rubber.app.publish.core.entity.PublishTaskInfo;
 import com.rubber.app.publish.logic.dto.AppPublishTaskDto;
+import com.rubber.app.publish.logic.dto.AppTaskInfoDto;
 import com.rubber.app.publish.logic.manager.pack.dto.AppPackResponse;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public interface AppPublishTaskService {
     /**
      * 任务id 查询任务详情
      */
-    PublishTaskInfo getTaskInfo(Integer taskId);
+    AppTaskInfoDto getTaskInfo(Integer taskId);
 
 
     /**

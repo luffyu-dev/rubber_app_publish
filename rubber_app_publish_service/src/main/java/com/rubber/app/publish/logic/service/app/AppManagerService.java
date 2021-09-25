@@ -1,9 +1,12 @@
 package com.rubber.app.publish.logic.service.app;
 
+import com.rubber.app.publish.core.entity.ServerDeviceInfo;
 import com.rubber.app.publish.logic.dto.AppConfigServiceDto;
 import com.rubber.app.publish.logic.dto.AppInfoDto;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author luffyu
@@ -30,6 +33,13 @@ public interface AppManagerService {
 
 
     /**
+     * 通过服务的key值查询信息
+     */
+    Map<String, ServerDeviceInfo> getAppServerByServerKeys(Set<String> serverKey);
+
+
+
+    /**
      * 服务扩容
      * @param appInfoDto
      */
@@ -40,5 +50,11 @@ public interface AppManagerService {
      * 服务缩容
      */
     void reduction(Integer applicationId);
+
+
+    /**
+     * 通过app的名称查询当前配置的环境
+     */
+    Map<Integer,String> queryAppServerEnv(String appName);
 
 }

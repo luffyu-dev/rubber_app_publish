@@ -80,7 +80,7 @@ public class AppManagerServiceImpl implements AppManagerService {
         List<ApplicationServerInfo> appServerInfos = iApplicationServerInfoService.queryByAppNameAndEnv(name,envSet);
         if (appServerInfos != null){
             Set<String> serverKey = appServerInfos.stream().filter(i->StrUtil.isNotEmpty(i.getServerKey())).map(ApplicationServerInfo::getServerKey).collect(Collectors.toSet());
-            Map<String,ServerDeviceInfo> deviceInfoMap = getByServerKeys(serverKey);
+            Map<String,ServerDeviceInfo> deviceInfoMap = getAppServerByServerKeys(serverKey);
 
             for (ApplicationServerInfo appServerInfo:appServerInfos){
                 AppConfigServiceDto appConfigServiceDto = new AppConfigServiceDto();
@@ -141,6 +141,24 @@ public class AppManagerServiceImpl implements AppManagerService {
         //执行释放逻辑
     }
 
+    /**
+     * 通过app的名称查询当前配置的环境
+     *
+     * @param appName
+     */
+    @Override
+    public Map<Integer, String> queryAppServerEnv(String appName) {
+        List<ApplicationServerInfo> applicationServerInfos = iApplicationServerInfoService.queryByAppNameAndEnv(appName, null);
+        Map<Integer,String> envMap = new HashMap<>(4);
+        if (applicationServerInfos != null ){
+            applicationServerInfos.forEach( i-> {
+                EnvEnum envEnum = EnvEnum.getByValue(i.getAppEnv());
+                envMap.put(i.getAppEnv(), envEnum != null ? envEnum.getLabel() : "");
+            });
+        }
+        return envMap;
+    }
+
 
     private ApplicationServerInfo doCreateApplicationServerInfo(ApplicationConfigInfo applicationConfigInfo,AppConfigServiceDto dto,Integer env){
         ApplicationServerInfo serverInfo = new ApplicationServerInfo();
@@ -162,8 +180,9 @@ public class AppManagerServiceImpl implements AppManagerService {
     /**
      * 查询服务器的设备的相关信息
      */
-    private Map<String,ServerDeviceInfo> getByServerKeys( Set<String> serverKey){
-        Map<String,ServerDeviceInfo> map = new HashMap<>();
+    @Override
+    public Map<String,ServerDeviceInfo> getAppServerByServerKeys( Set<String> serverKey){
+        Map<String,ServerDeviceInfo> map = new HashMap<>(2);
         if (CollUtil.isNotEmpty(serverKey)){
             String[] keys = new String[serverKey.size()];
             List<ServerDeviceInfo>  serverDeviceInfoList = iServerDeviceInfoService.queryByServerKeys(CollUtil.toList(serverKey.toArray(keys)));

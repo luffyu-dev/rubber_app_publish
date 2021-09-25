@@ -66,7 +66,7 @@ public class PublishTaskController extends BaseAdminController {
     }
 
 
-    @PostMapping("/log/{taskId}")
+    @GetMapping("/log/{taskId}")
     public ResultMsg taskLog(@PathVariable("taskId")Integer taskId){
         return ResultMsg.success(appPublishTaskService.getPackTaskLog(taskId));
     }

@@ -7,6 +7,7 @@ import com.rubber.app.publish.core.service.IApplicationPublishOrderService;
 import com.rubber.base.components.mysql.plugins.admin.BaseAdminService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -31,5 +32,21 @@ public class ApplicationPublishOrderServiceImpl extends BaseAdminService<Applica
             queryWrapper.eq("app_env",env);
         }
         return list(queryWrapper);
+    }
+
+    /**
+     * 更具任务id更新全部的任务信息
+     *
+     * @param taskId     当前taskId
+     * @param taskStatus 当前的任务状态
+     */
+    @Override
+    public void updateStateByTaskId(Integer taskId, Integer taskStatus) {
+        QueryWrapper<ApplicationPublishOrder> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("task_id",taskId);
+        ApplicationPublishOrder applicationPublishOrder = new ApplicationPublishOrder();
+        applicationPublishOrder.setModifyTime(LocalDateTime.now());
+        applicationPublishOrder.setPublishStatus(taskStatus);
+        update(applicationPublishOrder,queryWrapper);
     }
 }

@@ -42,6 +42,29 @@ public class ApplicationInfoController extends BaseAdminController {
         return ResultMsg.success(iApplicationConfigInfoService.pageBySelect(pageModel, ApplicationConfigInfo.class, null));
     }
 
+
+
+    /**
+     * 查询全部的应用信息
+     * @return 返回查询的信息
+     */
+    @GetMapping("/list-all")
+    public ResultMsg listAll(){
+        return ResultMsg.success(iApplicationConfigInfoService.list());
+    }
+
+
+    /**
+     * 查询全部的应用信息
+     * @return 返回查询的信息
+     */
+    @GetMapping("/server-env/{appName}")
+    public ResultMsg serverEnv(@PathVariable("appName")String appName){
+        return ResultMsg.success(appManagerService.queryAppServerEnv(appName));
+    }
+
+
+
     /**
      * 保存信息
      * @param applicationConfigInfo  保存的信息

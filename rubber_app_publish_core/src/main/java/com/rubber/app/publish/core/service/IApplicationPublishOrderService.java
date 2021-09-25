@@ -22,5 +22,11 @@ public interface IApplicationPublishOrderService extends IBaseAdminService<Appli
     List<ApplicationPublishOrder> queryByTaskId(Integer taskId,Integer env);
 
 
+    /**
+     * 更具任务id更新全部的任务信息
+     * @param taskId 当前taskId
+     * @param taskStatus 当前的任务状态
+     */
+    void updateStateByTaskId(Integer taskId,Integer taskStatus);
 
 }
