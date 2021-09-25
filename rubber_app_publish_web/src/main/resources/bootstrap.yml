@@ -1,7 +1,7 @@
 server:
   port: 38002
-
-
+  servlet:
+    context-path: /oa-api
 
 spring:
   application:

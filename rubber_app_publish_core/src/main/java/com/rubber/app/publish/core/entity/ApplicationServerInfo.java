@@ -53,7 +53,7 @@ public class ApplicationServerInfo extends BaseEntity {
     private String appPackTag;
 
     /**
-     * 当前服务状态 10表示正常 20表示停用
+     * 当前服务状态 10表示初始化 20表示正常 30表示停用
      */
     private Integer appServerStatus;
 

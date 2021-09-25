@@ -5,6 +5,8 @@ import com.rubber.app.publish.core.entity.PublishTaskInfo;
 import com.rubber.app.publish.logic.dto.AppPublishTaskDto;
 import com.rubber.app.publish.logic.manager.pack.dto.AppPackResponse;
 
+import java.util.List;
+
 /**
  * @author luffyu
  * Created on 2021/8/29
@@ -20,8 +22,16 @@ public interface AppPublishTaskService {
     /**
      * 任务id 查询任务详情
      */
-    AppPublishTaskDto getTaskInfo(Integer taskId);
+    PublishTaskInfo getTaskInfo(Integer taskId);
 
+
+    /**
+     * 按照任务id和环境查找信息信息
+     * @param taskId
+     * @param env
+     * @return
+     */
+    List<AppPublishTaskDto> getPushTaskInfo(Integer taskId,Integer env);
 
     /**
      * 开始打包

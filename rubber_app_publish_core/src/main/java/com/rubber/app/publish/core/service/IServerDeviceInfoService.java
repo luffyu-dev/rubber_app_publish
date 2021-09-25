@@ -5,6 +5,7 @@ import com.rubber.app.publish.core.entity.ServerDeviceInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.rubber.base.components.mysql.plugins.admin.IBaseAdminService;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -32,6 +33,13 @@ public interface IServerDeviceInfoService extends IBaseAdminService<ServerDevice
      */
     ServerDeviceInfo getByServerKey(String serverKey);
 
+
+    /**
+     * 通过serverKey来查询设备信息
+     * @param serverKeys 服务的key
+     * @return 返回设备信息
+     */
+    List<ServerDeviceInfo> queryByServerKeys(Collection<String> serverKeys);
 
     /**
      * 通过服务类型查询服务设备信息

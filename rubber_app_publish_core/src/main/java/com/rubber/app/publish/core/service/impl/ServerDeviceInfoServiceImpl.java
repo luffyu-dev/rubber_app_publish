@@ -16,6 +16,7 @@ import com.rubber.base.components.mysql.plugins.admin.BaseAdminService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -65,7 +66,7 @@ public class ServerDeviceInfoServiceImpl extends BaseAdminService<ServerDeviceIn
     public ServerDeviceInfo getByIpPort(String ip,Integer port){
         QueryWrapper<ServerDeviceInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("server_ip",ip);
-        queryWrapper.eq("server_port",port);
+        queryWrapper.eq("server_sh_port",port);
         return getOne(queryWrapper);
     }
 
@@ -78,6 +79,19 @@ public class ServerDeviceInfoServiceImpl extends BaseAdminService<ServerDeviceIn
         QueryWrapper<ServerDeviceInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("server_key",serverKey);
         return getOne(queryWrapper);
+    }
+
+    /**
+     * 通过serverKey来查询设备信息
+     *
+     * @param serverKeys 服务的key
+     * @return 返回设备信息
+     */
+    @Override
+    public List<ServerDeviceInfo> queryByServerKeys(Collection<String> serverKeys) {
+        QueryWrapper<ServerDeviceInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("server_key",serverKeys);
+        return list(queryWrapper);
     }
 
     /**

@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>rubber_app_publish_logic</artifactId>
+    <artifactId>rubber_app_publish_service</artifactId>
 
     <dependencies>
         <dependency>

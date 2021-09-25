@@ -19,5 +19,8 @@ public interface IApplicationPublishOrderService extends IBaseAdminService<Appli
     /**
      * 通过任务id查询
      */
-    List<ApplicationPublishOrder> queryByTaskId(Integer taskId);
+    List<ApplicationPublishOrder> queryByTaskId(Integer taskId,Integer env);
+
+
+
 }

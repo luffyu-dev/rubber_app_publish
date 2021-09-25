@@ -22,4 +22,10 @@ public interface IApplicationServerInfoService extends IBaseAdminService<Applica
      * 查询相关配置信息
      */
     List<ApplicationServerInfo> queryByAppNameAndEnv(String appName, Set<Integer> env);
+
+
+    /**
+     * 查询相关配置信息
+     */
+    List<ApplicationServerInfo> queryByIds(Set<Integer> ids);
 }

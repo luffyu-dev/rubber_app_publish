@@ -43,6 +43,18 @@ public class ApplicationPublishOrder extends BaseEntity {
     private Integer applicationId;
 
     /**
+     * 发布环境
+     */
+    private Integer appEnv;
+
+
+    /**
+     * 关联的服务key值
+     */
+    private String serverKey;
+
+
+    /**
      * 发布状态
      */
     private Integer publishStatus;

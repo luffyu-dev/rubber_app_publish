@@ -1,37 +1,18 @@
 package com.rubber.app.publish.logic.dto;
 
-
 import lombok.Data;
-
 
 /**
  * @author luffyu
- * Created on 2021/8/29
+ * Created on 2021/9/22
  */
 @Data
-public class AppPublishTaskDto {
+public class AppConfigServiceDto {
 
     /**
-     * 任务的id
-     */
-    private Integer taskId;
-
-    /**
-     * 需要发布的应用id
+     * 当前一台应用的服务id
      */
     private Integer applicationId;
-
-    /**
-     * 发布状态
-     */
-    private Integer publishStatus;
-
-    /**
-     * 发布的参数
-     */
-    private String publishParams;
-
-
 
     /**
      * 应用名称
@@ -48,6 +29,11 @@ public class AppPublishTaskDto {
      * app的打包tag
      */
     private String appPackTag;
+
+    /**
+     * 当前服务状态 10表示正常 20表示停用
+     */
+    private Integer appServerStatus;
 
 
     /**
@@ -70,5 +56,6 @@ public class AppPublishTaskDto {
      * 服务器端口
      */
     private Integer serverShPort;
+
 
 }

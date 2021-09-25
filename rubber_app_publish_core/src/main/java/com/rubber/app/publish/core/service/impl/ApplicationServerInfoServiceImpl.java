@@ -98,4 +98,16 @@ public class ApplicationServerInfoServiceImpl extends BaseAdminService<Applicati
         }
         return list(queryWrapper);
     }
+
+    /**
+     * 查询相关配置信息
+     *
+     * @param ids
+     */
+    @Override
+    public List<ApplicationServerInfo> queryByIds(Set<Integer> ids) {
+        QueryWrapper<ApplicationServerInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("application_id",ids);
+        return list(queryWrapper);
+    }
 }

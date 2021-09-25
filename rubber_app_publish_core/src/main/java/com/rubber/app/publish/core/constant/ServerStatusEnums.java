@@ -12,9 +12,10 @@ public enum ServerStatusEnums {
     /**
      * 状态
      */
-    NORMAL(10,"正常"),
-    STOP(30,"停用"),
-    LOADING(40,"负载")
+    INIT(10,"初始化"),
+    NORMAL(20,"正常"),
+    STOP(30,"异常"),
+    RELEASE(40,"释放中")
 
 
     ;

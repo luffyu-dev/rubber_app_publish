@@ -20,10 +20,13 @@ import com.rubber.app.publish.logic.manager.pack.dto.AppPackStatusDto;
 import com.rubber.app.publish.logic.manager.pack.jenkins.RubberJenkinsPackManager;
 import com.rubber.app.publish.logic.service.task.AppPublishTaskService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -84,20 +87,44 @@ public class AppPublishTaskServiceImpl implements AppPublishTaskService {
      * @param taskId
      */
     @Override
-    public AppPublishTaskDto getTaskInfo(Integer taskId) {
-        AppPublishTaskDto appPublishTaskDto = new AppPublishTaskDto();
+    public PublishTaskInfo getTaskInfo(Integer taskId) {
         PublishTaskInfo publishTaskInfo = iPublishTaskInfoService.getById(taskId);
         if (publishTaskInfo == null){
             throw new AppPublishException(ErrCodeEnums.DATA_IS_NOT_EXIST);
         }
-        appPublishTaskDto.setPublishTaskInfo(publishTaskInfo);
-        Map<Integer,ApplicationPublishOrder> orderList= new HashMap<>();
-        List<ApplicationPublishOrder> applicationPublishOrders = iApplicationPublishOrderService.queryByTaskId(taskId);
-        if (applicationPublishOrders != null){
-            orderList = applicationPublishOrders.stream().collect(Collectors.toMap(ApplicationPublishOrder::getApplicationId, i->i));
+        return publishTaskInfo;
+    }
+
+    /**
+     * 按照任务id和环境查找信息信息
+     *
+     * @param taskId
+     * @param env
+     * @return
+     */
+    @Override
+    public List<AppPublishTaskDto> getPushTaskInfo(Integer taskId, Integer env) {
+        List<AppPublishTaskDto> appPublishTaskDtos = new ArrayList<>();
+        List<ApplicationPublishOrder> applicationPublishOrders = iApplicationPublishOrderService.queryByTaskId(taskId,env);
+        if (CollUtil.isNotEmpty(applicationPublishOrders)){
+            Map<Integer,ApplicationServerInfo> applicationServerInfoMap = new HashMap<>();
+            Set<Integer> collect = applicationPublishOrders.stream().map(ApplicationPublishOrder::getApplicationId).collect(Collectors.toSet());
+            List<ApplicationServerInfo> applicationServerInfos = iApplicationServerInfoService.queryByIds(collect);
+            if (applicationServerInfos != null){
+                applicationServerInfoMap = applicationServerInfos.stream().collect(Collectors.toMap(ApplicationServerInfo::getApplicationId,i->i));
+            }
+
+            for (ApplicationPublishOrder applicationPublishOrder:applicationPublishOrders){
+                AppPublishTaskDto appPublishTaskDto = new AppPublishTaskDto();
+                BeanUtils.copyProperties(applicationPublishOrder,appPublishTaskDto);
+                ApplicationServerInfo applicationServerInfo = applicationServerInfoMap.get(applicationPublishOrder.getApplicationId());
+                if (applicationServerInfo != null){
+                    BeanUtils.copyProperties(applicationServerInfo,appPublishTaskDto);
+                }
+                appPublishTaskDtos.add(appPublishTaskDto);
+            }
         }
-        appPublishTaskDto.setPublishOrderMap(orderList);
-        return appPublishTaskDto;
+        return appPublishTaskDtos;
     }
 
     /**
@@ -185,9 +212,15 @@ public class AppPublishTaskServiceImpl implements AppPublishTaskService {
 
     private ApplicationPublishOrder creatPublishOrder(ApplicationServerInfo applicationServerInfo,PublishTaskInfo publishTaskInfo){
         ApplicationPublishOrder applicationPublishOrder = new ApplicationPublishOrder();
-        applicationPublishOrder.setApplicationId(applicationServerInfo.getApplicationId());
         applicationPublishOrder.setTaskId(publishTaskInfo.getTaskId());
+        applicationPublishOrder.setApplicationId(applicationServerInfo.getApplicationId());
+        applicationPublishOrder.setAppEnv(applicationServerInfo.getAppEnv());
+        applicationPublishOrder.setServerKey(applicationServerInfo.getServerKey());
         applicationPublishOrder.setPublishStatus(PushStatusEnums.WAIT_PACK.getCode());
+        LocalDateTime now = LocalDateTime.now();
+        applicationPublishOrder.setCreateTime(now);
+        applicationPublishOrder.setModifyTime(now);
+        applicationPublishOrder.setVersion(1);
         return applicationPublishOrder;
     }
 

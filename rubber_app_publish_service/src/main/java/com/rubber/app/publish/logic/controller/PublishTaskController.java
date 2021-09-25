@@ -1,7 +1,6 @@
 package com.rubber.app.publish.logic.controller;
 
 import com.rubber.app.publish.core.entity.PublishTaskInfo;
-import com.rubber.app.publish.core.entity.ServerDeviceInfo;
 import com.rubber.app.publish.core.service.IPublishTaskInfoService;
 import com.rubber.app.publish.logic.service.task.AppPublishTaskService;
 import com.rubber.base.components.mysql.plugins.admin.BaseAdminController;
@@ -16,7 +15,7 @@ import javax.annotation.Resource;
  * Created on 2021/8/29
  */
 @RestController
-@RequestMapping("/publish/task")
+@RequestMapping("/publish/push-task")
 public class PublishTaskController extends BaseAdminController {
 
     @Resource
@@ -47,6 +46,11 @@ public class PublishTaskController extends BaseAdminController {
     @GetMapping("/info/{taskId}")
     public ResultMsg infoTask(@PathVariable("taskId")Integer taskId){
         return ResultMsg.success(appPublishTaskService.getTaskInfo(taskId));
+    }
+
+    @GetMapping("/env-info")
+    public ResultMsg infoEnvTask(Integer taskId,Integer env){
+        return ResultMsg.success(appPublishTaskService.getPushTaskInfo(taskId,env));
     }
 
 
