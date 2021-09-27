@@ -1,5 +1,6 @@
 package com.rubber.app.publish.logic.manager.push.dto;
 
+import com.rubber.app.publish.logic.dto.ServerDeviceInfoDto;
 import lombok.Data;
 
 /**
@@ -8,38 +9,26 @@ import lombok.Data;
  */
 @Data
 public class AppPushDto {
+
     /**
-     * app的版本
+     * 分布任务的名称
+     */
+    private String taskName;
+
+    /**
+     * 应用名称
      */
     private String appName;
 
     /**
-     * 打包的tag
+     * jenkins打包的服务设备信息
      */
-    private String gitTag;
+    private ServerDeviceInfoDto jenkinsDevice;
+
 
     /**
-     * 目标ip
+     * 目标应用的服务机器
      */
-    private String targetIp;
+    private ServerDeviceInfoDto tagPushDevice;
 
-    /**
-     * 目标服务器的端口
-     */
-    private int targetPort = 20;
-
-    /**
-     * 目标服务器的用户
-     */
-    private String targetShUser;
-
-    /**
-     * 目标服务器的密码
-     */
-    private String targetShPassword;
-
-    /**
-     * 目标地址
-     */
-    private String targetPath;
 }

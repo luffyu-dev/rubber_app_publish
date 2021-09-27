@@ -64,7 +64,7 @@ public class RubberJenkinsPackManager implements RubberPackManager {
             }
         }catch (Exception e){
             //打包有异常的操作
-
+            log.error("jenkins 打包异常");
         }
         return appPackResponse;
     }
@@ -179,7 +179,7 @@ public class RubberJenkinsPackManager implements RubberPackManager {
      * @param appPackDto
      */
     public void doCreateJob(JenkinsServer jenkinsServer,AppPackDto appPackDto) throws IOException {
-        Document document = XmlUtil.readXML(new File("rubber_app_publish_manager/src/main/resources/jenkinsTemplate.xml"));
+        Document document = XmlUtil.readXML(new File("rubber_app_publish_service/src/main/resources/jenkinsTemplate.xml"));
         String xml = XmlUtil.toStr(document);
         xml = StringUtils.replace(xml,"${git_hub_url}",appPackDto.getGitHubUrl());
         jenkinsServer.createJob(appPackDto.getAppName(),xml);
