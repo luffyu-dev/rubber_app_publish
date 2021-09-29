@@ -57,6 +57,16 @@ public class PublishTaskInfo extends BaseEntity {
      */
     private Integer taskStatus;
 
+    /**
+     * 推送的子模块
+     */
+    private String publishModel;
+
+    /**
+     * jar包的名称
+     */
+    private String jarName;
+
 
     /**
      * jenkins服务的key值

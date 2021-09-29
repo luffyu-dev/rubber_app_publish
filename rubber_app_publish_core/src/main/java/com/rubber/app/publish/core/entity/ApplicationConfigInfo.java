@@ -63,6 +63,11 @@ public class ApplicationConfigInfo extends BaseEntity {
     private String mavenPath;
 
     /**
+     * 推送的子模块
+     */
+    private String publishModel;
+
+    /**
      * jdk版本
      */
     private String jdkVersion;

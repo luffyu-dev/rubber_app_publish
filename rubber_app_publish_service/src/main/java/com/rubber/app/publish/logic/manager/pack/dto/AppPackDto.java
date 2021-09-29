@@ -10,6 +10,11 @@ import lombok.Data;
 public class AppPackDto {
 
     /**
+     * job的名称
+     */
+    private String jobName;
+
+    /**
      * 当前的app名称
      */
     private String appName;

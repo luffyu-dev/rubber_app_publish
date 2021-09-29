@@ -1,6 +1,8 @@
 package com.rubber.app.publish.logic.dto;
 
+import com.rubber.app.publish.core.entity.ServerDeviceInfo;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.NotNull;
 
@@ -99,4 +101,11 @@ public class ServerDeviceInfoDto {
 
 
 
+    public  ServerDeviceInfoDto(){
+
+    }
+
+    public ServerDeviceInfoDto(ServerDeviceInfo serverDeviceInfo){
+        BeanUtils.copyProperties(serverDeviceInfo,this);
+    }
 }

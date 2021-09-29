@@ -19,7 +19,8 @@ public enum  PushStatusEnums {
 
     WAIT_PUSH(20,"待推送",2),
     PUSHING(21,"推送中",2),
-    PUSHED(22,"已推送",2),
+    PUSHING_ERROR(22,"推送失败",2),
+    PUSH_SUCCESS(23,"已推送",2),
 
     WAIT_PUBLISH(30,"待发布",3),
     PUBLISHING(31,"发布中",3),

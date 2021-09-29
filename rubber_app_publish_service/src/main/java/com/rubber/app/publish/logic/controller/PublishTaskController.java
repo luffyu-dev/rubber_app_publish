@@ -37,38 +37,65 @@ public class PublishTaskController extends BaseAdminController {
     }
 
 
+    /**
+     *  新增任务
+     */
     @PostMapping("/add")
     public ResultMsg addTask(@RequestBody PublishTaskInfo publishTaskInfo){
         appPublishTaskService.addTask(publishTaskInfo);
         return ResultMsg.success();
     }
 
+    /**
+     * 任务信息
+     */
     @GetMapping("/info/{taskId}")
     public ResultMsg infoTask(@PathVariable("taskId")Integer taskId){
         return ResultMsg.success(appPublishTaskService.getTaskInfo(taskId));
     }
 
+    /**
+     * 环境信息
+     */
     @GetMapping("/env-info")
     public ResultMsg infoEnvTask(Integer taskId,Integer env){
         return ResultMsg.success(appPublishTaskService.getPushTaskInfo(taskId,env));
     }
 
 
+    /**
+     * 打包接口
+     */
     @PostMapping("/pack/{taskId}")
     public ResultMsg startPack(@PathVariable("taskId")Integer taskId){
         return ResultMsg.success(appPublishTaskService.startPack(taskId));
     }
 
 
+    /**
+     * 查询任务状态
+     */
     @PostMapping("/status/{taskId}")
     public ResultMsg taskStatus(@PathVariable("taskId")Integer taskId){
         return ResultMsg.success(appPublishTaskService.getTaskStatus(taskId));
     }
 
-
+    /**
+     * 打包日志
+     */
     @GetMapping("/log/{taskId}")
     public ResultMsg taskLog(@PathVariable("taskId")Integer taskId){
         return ResultMsg.success(appPublishTaskService.getPackTaskLog(taskId));
+    }
+
+
+    /**
+     * 推送jar包到服务器
+     */
+    @PostMapping("/push/{publishId}")
+    public ResultMsg push(@PathVariable("publishId")Integer publishId){
+        appPublishTaskService.pushPack(publishId);
+        return ResultMsg.success();
     }
 
 }

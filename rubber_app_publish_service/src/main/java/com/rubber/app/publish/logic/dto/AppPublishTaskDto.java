@@ -17,6 +17,11 @@ public class AppPublishTaskDto {
     private Integer taskId;
 
     /**
+     * 发布单id
+     */
+    private Integer publishId;
+
+    /**
      * 需要发布的应用id
      */
     private Integer applicationId;

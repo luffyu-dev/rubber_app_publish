@@ -5,7 +5,9 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.XmlUtil;
 import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.model.*;
+import com.rubber.app.publish.core.constant.ErrCodeEnums;
 import com.rubber.app.publish.core.constant.PushStatusEnums;
+import com.rubber.app.publish.logic.exception.AppPublishException;
 import com.rubber.app.publish.logic.manager.pack.RubberPackManager;
 import com.rubber.app.publish.logic.manager.pack.config.JenkinsBeanServer;
 import com.rubber.app.publish.logic.manager.pack.config.JenkinsServerProvider;
@@ -50,10 +52,10 @@ public class RubberJenkinsPackManager implements RubberPackManager {
         JenkinsBeanServer jenkinsBeanServer  =  jenkinsServerProvider.getJenkinsServer();
         JenkinsServer jenkinsServer = jenkinsBeanServer.getJenkinsServer();
         try {
-            log.info("开始执行打包逻辑,packName={}",appPackDto.getAppName());
+            log.info("开始执行打包逻辑,packName={}",appPackDto.getJobName());
             //如果当前打包的app不存在，则创建一个打包的任务
             if (!isExist(jenkinsServer,appPackDto)) {
-                log.info("开始执行的打包任务不存在，则创建一个任务,packName={}",appPackDto.getAppName());
+                log.info("开始执行的打包任务不存在，则创建一个任务,packName={}",appPackDto.getJobName());
                 doCreateJob(jenkinsServer,appPackDto);
             }
             QueueReference queueReference = doBuildJob(jenkinsServer,appPackDto);
@@ -64,7 +66,8 @@ public class RubberJenkinsPackManager implements RubberPackManager {
             }
         }catch (Exception e){
             //打包有异常的操作
-            log.error("jenkins 打包异常");
+            log.error("jenkins 打包异常,e={}",e.getMessage());
+            throw new AppPublishException(ErrCodeEnums.TASK_PACK_ERROR,e.getMessage());
         }
         return appPackResponse;
     }
@@ -143,7 +146,7 @@ public class RubberJenkinsPackManager implements RubberPackManager {
                     if (BuildResult.SUCCESS.equals(buildResult)){
                         //打包成功
                         appPackStatusDto.setPreStatus(PushStatusEnums.PACK_SUCCESS);
-                        appPackStatusDto.setNowStatus(PushStatusEnums.PACK_SUCCESS);
+                        appPackStatusDto.setNowStatus(PushStatusEnums.WAIT_PUSH);
                     }else if (BuildResult.FAILURE.equals(buildResult)){
                         appPackStatusDto.setPreStatus(PushStatusEnums.PACK_ERROR);
                         appPackStatusDto.setNowStatus(PushStatusEnums.PACK_ERROR);
@@ -165,7 +168,7 @@ public class RubberJenkinsPackManager implements RubberPackManager {
      */
     public boolean isExist(JenkinsServer jenkinsServer,AppPackDto appPackDto) {
         try {
-            JobWithDetails jobWithDetails = jenkinsServer.getJob(appPackDto.getAppName());
+            JobWithDetails jobWithDetails = jenkinsServer.getJob(appPackDto.getJobName());
             return jobWithDetails != null;
         } catch (IOException e) {
             e.printStackTrace();
@@ -182,7 +185,7 @@ public class RubberJenkinsPackManager implements RubberPackManager {
         Document document = XmlUtil.readXML(new File("rubber_app_publish_service/src/main/resources/jenkinsTemplate.xml"));
         String xml = XmlUtil.toStr(document);
         xml = StringUtils.replace(xml,"${git_hub_url}",appPackDto.getGitHubUrl());
-        jenkinsServer.createJob(appPackDto.getAppName(),xml);
+        jenkinsServer.createJob(appPackDto.getJobName(),xml);
     }
 
     /**
@@ -191,7 +194,7 @@ public class RubberJenkinsPackManager implements RubberPackManager {
      * @param appPackDto
      */
     public QueueReference doBuildJob(JenkinsServer jenkinsServer,AppPackDto appPackDto) throws IOException {
-        JobWithDetails jobWithDetails = jenkinsServer.getJob(appPackDto.getAppName());
+        JobWithDetails jobWithDetails = jenkinsServer.getJob(appPackDto.getJobName());
         Map<String,String> buildParam = new HashMap<>(2);
         if (StrUtil.isNotEmpty(appPackDto.getGitTag()) || StrUtil.isNotEmpty(appPackDto.getGitBranch())){
             buildParam.put("tag",StrUtil.isNotEmpty(appPackDto.getGitTag()) ? appPackDto.getGitTag() : appPackDto.getGitBranch());

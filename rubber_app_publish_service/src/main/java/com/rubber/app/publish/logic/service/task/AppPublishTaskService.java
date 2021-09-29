@@ -4,6 +4,7 @@ import com.rubber.app.publish.core.entity.PublishTaskInfo;
 import com.rubber.app.publish.logic.dto.AppPublishTaskDto;
 import com.rubber.app.publish.logic.dto.AppTaskInfoDto;
 import com.rubber.app.publish.logic.manager.pack.dto.AppPackResponse;
+import com.rubber.app.publish.logic.manager.push.dto.AppPushResult;
 
 import java.util.List;
 
@@ -52,5 +53,11 @@ public interface AppPublishTaskService {
      * @return
      */
     String getPackTaskLog(Integer taskId);
+
+
+    /**
+     * 推送jar包到某台服务器
+     */
+    void pushPack(Integer publishId);
 
 }

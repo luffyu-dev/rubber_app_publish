@@ -27,6 +27,9 @@ public enum ErrCodeEnums implements ICodeHandle {
     DATA_IS_NOT_EXIST("3020000", "数据不存在"),
     INIT_ERROR("3020000", "初始化数据错误"),
 
+    TASK_PACK_ERROR("3020000", "任务打包异常"),
+    TASK_NOT_PACK("3020000", "任务没有打包或者打包失败"),
+    TASK_PUSH_ERROR("3020000", "推送失败"),
 
 
 

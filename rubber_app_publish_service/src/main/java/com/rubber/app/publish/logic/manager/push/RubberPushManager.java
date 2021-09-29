@@ -1,6 +1,7 @@
 package com.rubber.app.publish.logic.manager.push;
 
 import com.rubber.app.publish.logic.manager.push.dto.AppPushDto;
+import com.rubber.app.publish.logic.manager.push.dto.AppPushResult;
 
 import java.io.IOException;
 
@@ -14,6 +15,6 @@ public interface RubberPushManager {
      * 推送接口
      * @return
      */
-    String pushPackage(AppPushDto appPushDto) throws Exception;
+    AppPushResult pushPackage(AppPushDto appPushDto) throws Exception;
 
 }

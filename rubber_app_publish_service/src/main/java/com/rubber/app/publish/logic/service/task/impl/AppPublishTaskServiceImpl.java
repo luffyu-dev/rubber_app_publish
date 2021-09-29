@@ -1,20 +1,24 @@
 package com.rubber.app.publish.logic.service.task.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.rubber.app.publish.core.constant.ErrCodeEnums;
 import com.rubber.app.publish.core.constant.PushStatusEnums;
 import com.rubber.app.publish.core.entity.*;
-import com.rubber.app.publish.core.service.IApplicationConfigInfoService;
-import com.rubber.app.publish.core.service.IApplicationPublishOrderService;
-import com.rubber.app.publish.core.service.IApplicationServerInfoService;
-import com.rubber.app.publish.core.service.IPublishTaskInfoService;
+import com.rubber.app.publish.core.service.*;
 import com.rubber.app.publish.logic.dto.AppPublishTaskDto;
 import com.rubber.app.publish.logic.dto.AppTaskInfoDto;
+import com.rubber.app.publish.logic.dto.ServerDeviceInfoDto;
 import com.rubber.app.publish.logic.exception.AppPublishException;
+import com.rubber.app.publish.logic.manager.TreadPoolSubmitManager;
 import com.rubber.app.publish.logic.manager.pack.dto.AppPackDto;
 import com.rubber.app.publish.logic.manager.pack.dto.AppPackResponse;
 import com.rubber.app.publish.logic.manager.pack.dto.AppPackStatusDto;
 import com.rubber.app.publish.logic.manager.pack.jenkins.RubberJenkinsPackManager;
+import com.rubber.app.publish.logic.manager.push.RubberPushManager;
+import com.rubber.app.publish.logic.manager.push.dto.AppPushDto;
+import com.rubber.app.publish.logic.manager.push.dto.AppPushResult;
 import com.rubber.app.publish.logic.service.app.AppManagerService;
 import com.rubber.app.publish.logic.service.task.AppPublishTaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.management.Query;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -51,10 +54,19 @@ public class AppPublishTaskServiceImpl implements AppPublishTaskService {
     private IApplicationConfigInfoService iApplicationConfigInfoService;
 
     @Resource
+    private IServerDeviceInfoService iServerDeviceInfoService;
+
+    @Resource
     private RubberJenkinsPackManager rubberJenkinsPackManager;
 
     @Autowired
     private AppManagerService appManagerService;
+
+    @Resource
+    private RubberPushManager rubberPushManager;
+
+    @Resource
+    private TreadPoolSubmitManager treadPoolSubmitManager;
 
     /**
      * 添加一个任务
@@ -216,12 +228,80 @@ public class AppPublishTaskServiceImpl implements AppPublishTaskService {
         return rubberJenkinsPackManager.getPackLog(appPackStatusDto);
     }
 
+    /**
+     * 推送jar包到某台服务器
+     *
+     * @param publishId
+     */
+    @Override
+    public void pushPack(Integer publishId) {
+        log.info("start pushPack id={}",publishId);
+        ApplicationPublishOrder publishOrder = iApplicationPublishOrderService.getById(publishId);
+        if (publishId == null){
+            throw new AppPublishException(ErrCodeEnums.DATA_IS_NOT_EXIST);
+        }
+        PublishTaskInfo publishTaskInfo = iPublishTaskInfoService.getById(publishOrder.getTaskId());
+        if (publishTaskInfo == null){
+            throw new AppPublishException(ErrCodeEnums.DATA_IS_NOT_EXIST);
+        }
+        if (PushStatusEnums.PACK_SUCCESS.getCode() > publishTaskInfo.getTaskStatus()){
+            throw new AppPublishException(ErrCodeEnums.TASK_NOT_PACK);
+        }
+
+        AppPushDto appPushDto = new AppPushDto();
+        appPushDto.setJobName(publishTaskInfo.getTaskName());
+        appPushDto.setJarName(publishTaskInfo.getJarName());
+        appPushDto.setPublishModel(publishTaskInfo.getPublishModel());
+        ServerDeviceInfo jenkinsServer = iServerDeviceInfoService.getByServerKey(publishTaskInfo.getJenkinsServerKey());
+        ServerDeviceInfo targetServer = iServerDeviceInfoService.getByServerKey(publishOrder.getServerKey());
+        if (jenkinsServer == null || targetServer == null){
+            throw new AppPublishException(ErrCodeEnums.DATA_IS_NOT_EXIST);
+        }
+        appPushDto.setJenkinsDevice(new ServerDeviceInfoDto(jenkinsServer));
+        appPushDto.setTagPushDevice(new ServerDeviceInfoDto(targetServer));
+        publishOrder.setPublishStatus(PushStatusEnums.PUSHING.getCode());
+        if (iApplicationPublishOrderService.updateById(publishOrder)){
+            doStartPush(publishOrder,appPushDto);
+        }
+    }
+
+
+    /**
+     * 异步推送
+     */
+    private void doStartPush(ApplicationPublishOrder publishOrder,AppPushDto appPushDto){
+        treadPoolSubmitManager.submit(()->{
+            JSONObject data = new JSONObject();
+            try {
+                AppPushResult appPushResult = rubberPushManager.pushPackage(appPushDto);
+                if (appPushResult.isSuccess()){
+                    publishOrder.setPublishStatus(PushStatusEnums.PUSH_SUCCESS.getCode());
+                }else {
+                    data.put("errMsg",appPushResult.getErrMsg());
+                    publishOrder.setPublishStatus(PushStatusEnums.WAIT_PUBLISH.getCode());
+                    publishOrder.setPublishParams(data.toString());
+                }
+            }catch (Exception e){
+                data.put("errMsg",e.getMessage());
+                publishOrder.setPublishStatus(PushStatusEnums.PUSHING_ERROR.getCode());
+                publishOrder.setPublishParams(data.toString());
+            }finally {
+                iApplicationPublishOrderService.updateById(publishOrder);
+            }
+        });
+    }
+
 
     /**
      *  前置校验层
      */
     private void doPerAddTask(PublishTaskInfo publishTaskInfo){
-
+        ApplicationConfigInfo applicationConfigInfo = iApplicationConfigInfoService.getByAppName(publishTaskInfo.getAppName());
+        if (applicationConfigInfo == null){
+            throw new AppPublishException(ErrCodeEnums.DATA_IS_NOT_EXIST);
+        }
+        publishTaskInfo.setPublishModel(applicationConfigInfo.getPublishModel());
+        publishTaskInfo.setTaskName(publishTaskInfo.getAppName() + "_" + publishTaskInfo.getAppPackTag());
     }
 
 
@@ -241,6 +321,7 @@ public class AppPublishTaskServiceImpl implements AppPublishTaskService {
 
     private AppPackDto createAppPackDto(ApplicationConfigInfo applicationConfigInfo,PublishTaskInfo publishTaskInfo){
         AppPackDto appPackDto = new AppPackDto();
+        appPackDto.setJobName(publishTaskInfo.getTaskName());
         appPackDto.setAppName(applicationConfigInfo.getAppName());
         appPackDto.setGitHubUrl(applicationConfigInfo.getGithubUrl());
         appPackDto.setPackMavenPath(applicationConfigInfo.getMavenPath());

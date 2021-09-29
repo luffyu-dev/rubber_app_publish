@@ -13,12 +13,18 @@ public class AppPushDto {
     /**
      * 分布任务的名称
      */
-    private String taskName;
+    private String jobName;
 
     /**
      * 应用名称
      */
-    private String appName;
+    private String jarName;
+
+
+    /**
+     * 发布的子模块
+     */
+    private String publishModel;
 
     /**
      * jenkins打包的服务设备信息

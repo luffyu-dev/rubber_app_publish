@@ -32,6 +32,8 @@ public class ServerDeviceInfoController extends BaseAdminController {
     @Resource
     private IServerDeviceInfoService iServerDeviceInfoService;
 
+    @Resource
+    private RubberShPushManager rubberShPushManager;
 
 
     /**
@@ -120,7 +122,7 @@ public class ServerDeviceInfoController extends BaseAdminController {
         ServerDeviceInfo serverDeviceInfo = iServerDeviceInfoService.getByServerKey(serverKey);
         ServerStatusEnums serverStatusEnums = ServerStatusEnums.STOP;
         try {
-            Connection connection = RubberShPushManager.login(serverDeviceInfo.getServerIp(), serverDeviceInfo.getServerShPort(),serverDeviceInfo.getServerShUser(), serverDeviceInfo.getServerShPsd());
+            Connection connection = rubberShPushManager.login(serverDeviceInfo.getServerIp(), serverDeviceInfo.getServerShPort(),serverDeviceInfo.getServerShUser(), serverDeviceInfo.getServerShPsd());
             if(connection !=null && connection.isAuthenticationComplete()){
                 serverStatusEnums = ServerStatusEnums.NORMAL;
             }
