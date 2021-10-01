@@ -1,7 +1,6 @@
 package com.rubber.app.publish.logic.service.task.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rubber.app.publish.core.constant.ErrCodeEnums;
 import com.rubber.app.publish.core.constant.PushStatusEnums;
@@ -12,6 +11,7 @@ import com.rubber.app.publish.logic.dto.AppTaskInfoDto;
 import com.rubber.app.publish.logic.dto.ServerDeviceInfoDto;
 import com.rubber.app.publish.logic.exception.AppPublishException;
 import com.rubber.app.publish.logic.manager.TreadPoolSubmitManager;
+import com.rubber.app.publish.logic.manager.pack.MavenResolveManager;
 import com.rubber.app.publish.logic.manager.pack.dto.AppPackDto;
 import com.rubber.app.publish.logic.manager.pack.dto.AppPackResponse;
 import com.rubber.app.publish.logic.manager.pack.dto.AppPackStatusDto;
@@ -67,6 +67,9 @@ public class AppPublishTaskServiceImpl implements AppPublishTaskService {
 
     @Resource
     private TreadPoolSubmitManager treadPoolSubmitManager;
+
+    @Resource
+    private MavenResolveManager mavenResolveManager;
 
     /**
      * 添加一个任务
@@ -126,7 +129,7 @@ public class AppPublishTaskServiceImpl implements AppPublishTaskService {
     public List<AppPublishTaskDto> getPushTaskInfo(Integer taskId, Integer env) {
         PublishTaskInfo publishTaskInfo = new PublishTaskInfo();
         publishTaskInfo.setTaskId(taskId);
-        return getPushTaskInfo(taskId,env);
+        return getPushTaskInfo(publishTaskInfo,env);
     }
 
 
@@ -300,6 +303,8 @@ public class AppPublishTaskServiceImpl implements AppPublishTaskService {
         if (applicationConfigInfo == null){
             throw new AppPublishException(ErrCodeEnums.DATA_IS_NOT_EXIST);
         }
+        //mavenResolveManager.resolveVersion(publishTaskInfo,applicationConfigInfo);
+
         publishTaskInfo.setPublishModel(applicationConfigInfo.getPublishModel());
         publishTaskInfo.setTaskName(publishTaskInfo.getAppName() + "_" + publishTaskInfo.getAppPackTag());
     }

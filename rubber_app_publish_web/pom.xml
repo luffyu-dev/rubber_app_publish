@@ -42,6 +42,7 @@
     </dependencies>
 
     <build>
+        <finalName>rubber_app_publish_web</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

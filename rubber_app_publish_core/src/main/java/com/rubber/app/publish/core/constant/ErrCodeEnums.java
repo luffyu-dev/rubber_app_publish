@@ -30,7 +30,8 @@ public enum ErrCodeEnums implements ICodeHandle {
     TASK_PACK_ERROR("3020000", "任务打包异常"),
     TASK_NOT_PACK("3020000", "任务没有打包或者打包失败"),
     TASK_PUSH_ERROR("3020000", "推送失败"),
-
+    DOWNLOAD_GITHUB_POM_ERROR("3020000", "从github上下载文件失败"),
+    RESOLVE_MAVEN_ERROR("3020000", "从github上下载文件失败"),
 
 
     ;
