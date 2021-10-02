@@ -43,37 +43,6 @@ public class RubberShPushManager implements RubberPushManager {
         return connection.authenticateWithPassword(userName, password) ? connection : null;
     }
 
-    /**
-     * 执行一个命令
-     *
-     * @param ip       主机ip
-     * @param userName 用户名
-     * @param password 密码
-     * @param scripts  需要执行的脚本
-     * @param charset  字符编码
-     * @return ShellResult类
-     * @throws Exception
-     */
-//    public static void exec(String ip, String userName, String password, String scripts, Charset charset) throws IOException {
-//
-//        Connection connection = login(ip, userName, password);
-//        if (connection == null) {
-//            throw new RuntimeException("登录远程服务器出现异常,ip为:" + ip);
-//        }
-//
-//        // Open a new {@link Session} on this connection
-//        Session session = connection.openSession();
-//
-//        try (InputStream stdOut = new StreamGobbler(session.getStdout()); InputStream stdErr = new StreamGobbler(session.getStderr())) {
-//            session.execCommand(scripts);
-//            String outStr = processStream(stdOut, charset.name());
-//            String outErr = processStream(stdErr, charset.name());
-//            session.waitForCondition(ChannelCondition.EXIT_STATUS, TIME_OUT);
-//            int exitStatus = session.getExitStatus();
-//            System.out.println(outStr + ">>>>" + outErr + ">>>>" +  exitStatus);
-//        }
-//    }
-
 
     /**
      * 执行脚本
@@ -114,11 +83,14 @@ public class RubberShPushManager implements RubberPushManager {
         PushPackShScriptDto pushPackShScriptDto = new PushPackShScriptDto(appPushDto,tagPushDevice.getServerShUser(),tagPushDevice.getServerIp(),tagPushDevice.getServerShPort());
         log.info("推送执行的脚本为:{}",pushPackShScriptDto.execScript());
         session.execCommand(pushPackShScriptDto.execScript());
+        log.info("执行脚本成功...");
         String outStr = processStream(stdOut, StandardCharsets.UTF_8.name());
         String outErr = processStream(stdErr, StandardCharsets.UTF_8.name());
+        log.info("获取执行结果...");
         AppPushResult appPushResult = new AppPushResult();
         if (StringUtils.isEmpty(outErr)){
             appPushResult.setSuccess(true);
+            appPushResult.setPushTargetPath(pushPackShScriptDto.initTargetPath());
         }
         appPushResult.setExecStatus(session.getExitStatus());
         appPushResult.setErrMsg(outErr);

@@ -255,6 +255,8 @@ public class AppPublishTaskServiceImpl implements AppPublishTaskService {
         appPushDto.setJobName(publishTaskInfo.getTaskName());
         appPushDto.setJarName(publishTaskInfo.getJarName());
         appPushDto.setPublishModel(publishTaskInfo.getPublishModel());
+        appPushDto.setAppName(publishTaskInfo.getAppName());
+        appPushDto.setPushTag(publishTaskInfo.getAppPackTag());
         ServerDeviceInfo jenkinsServer = iServerDeviceInfoService.getByServerKey(publishTaskInfo.getJenkinsServerKey());
         ServerDeviceInfo targetServer = iServerDeviceInfoService.getByServerKey(publishOrder.getServerKey());
         if (jenkinsServer == null || targetServer == null){
@@ -278,16 +280,17 @@ public class AppPublishTaskServiceImpl implements AppPublishTaskService {
             try {
                 AppPushResult appPushResult = rubberPushManager.pushPackage(appPushDto);
                 if (appPushResult.isSuccess()){
-                    publishOrder.setPublishStatus(PushStatusEnums.PUSH_SUCCESS.getCode());
+                    publishOrder.setPublishStatus(PushStatusEnums.WAIT_PUBLISH.getCode());
                 }else {
                     data.put("errMsg",appPushResult.getErrMsg());
-                    publishOrder.setPublishStatus(PushStatusEnums.WAIT_PUBLISH.getCode());
-                    publishOrder.setPublishParams(data.toString());
+                    publishOrder.setPublishStatus(PushStatusEnums.PUSHING_ERROR.getCode());
+                    //publishOrder.setPublishParams(data.toString());
                 }
             }catch (Exception e){
+                log.error("推送出现了异常..msg={}",e.getMessage());
                 data.put("errMsg",e.getMessage());
                 publishOrder.setPublishStatus(PushStatusEnums.PUSHING_ERROR.getCode());
-                publishOrder.setPublishParams(data.toString());
+                //publishOrder.setPublishParams(data.toString());
             }finally {
                 iApplicationPublishOrderService.updateById(publishOrder);
             }
@@ -303,10 +306,9 @@ public class AppPublishTaskServiceImpl implements AppPublishTaskService {
         if (applicationConfigInfo == null){
             throw new AppPublishException(ErrCodeEnums.DATA_IS_NOT_EXIST);
         }
-        //mavenResolveManager.resolveVersion(publishTaskInfo,applicationConfigInfo);
-
         publishTaskInfo.setPublishModel(applicationConfigInfo.getPublishModel());
         publishTaskInfo.setTaskName(publishTaskInfo.getAppName() + "_" + publishTaskInfo.getAppPackTag());
+        mavenResolveManager.resolveVersion(publishTaskInfo,applicationConfigInfo);
     }
 
 

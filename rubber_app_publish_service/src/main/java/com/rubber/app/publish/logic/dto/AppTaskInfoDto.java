@@ -45,6 +45,16 @@ public class AppTaskInfoDto {
      */
     private Integer taskStatus;
 
+    /**
+     * jar包的名称
+     */
+    private String jarName;
+
+    /**
+     * jar包版本
+     */
+    private String jarVersion;
+
 
     /**
      * jenkins服务的key值

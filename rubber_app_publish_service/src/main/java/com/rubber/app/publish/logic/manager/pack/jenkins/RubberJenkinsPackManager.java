@@ -143,13 +143,18 @@ public class RubberJenkinsPackManager implements RubberPackManager {
                 BuildWithDetails buildWithDetails = build.details();
                 if (buildWithDetails != null){
                     BuildResult buildResult = buildWithDetails.getResult();
-                    if (BuildResult.SUCCESS.equals(buildResult)){
-                        //打包成功
-                        appPackStatusDto.setPreStatus(PushStatusEnums.PACK_SUCCESS);
-                        appPackStatusDto.setNowStatus(PushStatusEnums.WAIT_PUSH);
-                    }else if (BuildResult.FAILURE.equals(buildResult)){
-                        appPackStatusDto.setPreStatus(PushStatusEnums.PACK_ERROR);
-                        appPackStatusDto.setNowStatus(PushStatusEnums.PACK_ERROR);
+                    switch (buildResult){
+                        case SUCCESS:
+                            //打包成功
+                            appPackStatusDto.setPreStatus(PushStatusEnums.PACK_SUCCESS);
+                            appPackStatusDto.setNowStatus(PushStatusEnums.WAIT_PUSH);
+                            break;
+                        case FAILURE:
+                        case ABORTED:
+                        default:
+                            appPackStatusDto.setPreStatus(PushStatusEnums.PACK_ERROR);
+                            appPackStatusDto.setNowStatus(PushStatusEnums.PACK_ERROR);
+                            break;
                     }
                 }
             }

@@ -11,7 +11,6 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -42,7 +41,7 @@ public class MavenResolveManager {
     public void resolveVersion(PublishTaskInfo publishTaskInfo, ApplicationConfigInfo applicationConfigInfo) {
         //maven版本的解析
         String gitHubDownloadUrl = resolveDownloadUrl(publishTaskInfo,applicationConfigInfo);
-        log.error("下载的连接是：{}",gitHubDownloadUrl);
+        log.info("下载的连接是：{}",gitHubDownloadUrl);
         InputStreamReader streamReader = null;
         try {
             try {
@@ -89,8 +88,8 @@ public class MavenResolveManager {
         String downloadUrl = formatterToDownloadApi(gitHubUrl);
         StringBuilder sb = new StringBuilder(downloadUrl);
         sb.append("/").append(publishTaskInfo.getAppPackTag()).append("/");
-        if (StrUtil.isNotEmpty(publishTaskInfo.getPublishModel())){
-            sb.append(publishTaskInfo.getPublishModel()).append("/");
+        if (StrUtil.isNotEmpty(applicationConfigInfo.getPublishModel())){
+            sb.append(applicationConfigInfo.getPublishModel()).append("/");
         }
         sb.append("pom.xml");
         return sb.toString();

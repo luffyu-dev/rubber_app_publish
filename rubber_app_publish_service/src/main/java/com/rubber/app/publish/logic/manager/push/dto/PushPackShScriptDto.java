@@ -11,7 +11,12 @@ import org.springframework.util.StringUtils;
 @Data
 public class PushPackShScriptDto {
 
-    private static final String BASE_SCRIPT = "scp -P ${targetShPort} /var/jenkins_home/workspace/${appPackPath} ${targetShUser}@${targetShIp}:/home/application/jar";
+    private static final String BASE_SCRIPT = "scp -P ${targetShPort} /var/jenkins_home/workspace/${appPackPath} ${targetShUser}@${targetShIp}:${target_path}";
+
+    /**
+     * 目标父目录
+     */
+    private static final String TARGET_FATHER_PATH = "/home/application/jar";
 
     /**
      * 任务名称
@@ -22,6 +27,16 @@ public class PushPackShScriptDto {
      * jar包名称
      */
     private String jarName;
+
+    /**
+     * app名称
+     */
+    private String appName;
+
+    /**
+     * 推送的版本
+     */
+    private String pushTag;
 
     /**
      * 推送的model
@@ -46,6 +61,8 @@ public class PushPackShScriptDto {
         this.jobName = appPushDto.getJobName();
         this.publishModel = appPushDto.getPublishModel();
         this.jarName = appPushDto.getJarName();
+        this.appName = appPushDto.getAppName();
+        this.pushTag = appPushDto.getPushTag();
 
         this.targetShUser = targetShUser;
         this.targetShIp = targetShIp;
@@ -58,7 +75,14 @@ public class PushPackShScriptDto {
         sb = sb.replace("${appPackPath}",initPackPath());
         sb = sb.replace("${targetShUser}",targetShUser);
         sb = sb.replace("${targetShIp}",targetShIp);
+        sb = sb.replace("${target_path}",initTargetPath());
         return sb;
+    }
+
+
+    public String initTargetPath(){
+        return TARGET_FATHER_PATH;
+        //return TARGET_FATHER_PATH + "/" + this.appName +"/"+ this.pushTag ;
     }
 
     public String initPackPath(){

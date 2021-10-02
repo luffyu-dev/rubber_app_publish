@@ -20,6 +20,17 @@ public class AppPushDto {
      */
     private String jarName;
 
+    /**
+     * app名称
+     */
+    private String appName;
+
+    /**
+     * 推送的版本
+     */
+    private String pushTag;
+
+
 
     /**
      * 发布的子模块

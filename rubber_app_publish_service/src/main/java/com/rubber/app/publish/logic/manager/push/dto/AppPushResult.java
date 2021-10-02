@@ -29,4 +29,8 @@ public class AppPushResult {
      */
     private String successMsg;
 
+    /**
+     * 推送成功的目录
+     */
+    private String pushTargetPath;
 }

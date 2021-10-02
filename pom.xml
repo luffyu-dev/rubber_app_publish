@@ -17,6 +17,7 @@
     <modules>
         <module>rubber_app_publish_core</module>
         <module>rubber_app_publish_service</module>
+        <module>rubber_app_publish_web</module>
     </modules>
 
 <!--    <build>-->
