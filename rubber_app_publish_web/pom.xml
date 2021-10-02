@@ -34,9 +34,17 @@
             <version>${rubber.version}</version>
         </dependency>
 
+<!--        开启nacos用此配置-->
+<!--        <dependency>-->
+<!--            <groupId>com.rubber</groupId>-->
+<!--            <artifactId>base_config</artifactId>-->
+<!--        </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-context -->
         <dependency>
-            <groupId>com.rubber</groupId>
-            <artifactId>base_config</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-context</artifactId>
+            <version>2.2.9.RELEASE</version>
         </dependency>
 
     </dependencies>
