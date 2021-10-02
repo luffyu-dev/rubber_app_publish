@@ -2,7 +2,9 @@ package com.rubber.app.publish.logic.manager.push.dto;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
-import org.springframework.util.StringUtils;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author luffyu
@@ -11,12 +13,15 @@ import org.springframework.util.StringUtils;
 @Data
 public class PushPackShScriptDto {
 
-    private static final String BASE_SCRIPT = "scp -P ${targetShPort} /var/jenkins_home/workspace/${appPackPath} ${targetShUser}@${targetShIp}:${target_path}";
+    //推送jar的版本
+    private static final String BASE_PUSH_JAR_SCRIPT = "scp -P ${targetShPort} /var/jenkins_home/workspace/${appPackPath} ${targetShUser}@${targetShIp}:${target_path}";
+    //推送脚本
+    private static final String BASE_PUSH_STARTSH_SCRIPT = "scp -P ${targetShPort} /var/jenkins_home/workspace/${appPackPath} ${targetShUser}@${targetShIp}:${target_path}/script";
 
     /**
      * 目标父目录
      */
-    private static final String TARGET_FATHER_PATH = "/home/application/jar";
+    private static final String TARGET_FATHER_PATH = "/home/application";
 
     /**
      * 任务名称
@@ -69,10 +74,28 @@ public class PushPackShScriptDto {
         this.targetShPort = targetShPort;
     }
 
-    public String execScript(){
-        String sb = BASE_SCRIPT;
+    public Set<String> execScript(){
+        Set<String> sh = new HashSet<>();
+        sh.add(getPushJarStartShScript());
+        sh.add(getPushJarScript());
+        return sh;
+    }
+
+
+    public String getPushJarScript(){
+        String sb = BASE_PUSH_STARTSH_SCRIPT;
         sb = sb.replace("${targetShPort}",String.valueOf(targetShPort));
-        sb = sb.replace("${appPackPath}",initPackPath());
+        sb = sb.replace("${appPackPath}",initPackPath() + this.jarName);
+        sb = sb.replace("${targetShUser}",targetShUser);
+        sb = sb.replace("${targetShIp}",targetShIp);
+        sb = sb.replace("${target_path}",initTargetPath());
+        return sb;
+    }
+
+    public String getPushJarStartShScript(){
+        String sb = BASE_PUSH_STARTSH_SCRIPT;
+        sb = sb.replace("${targetShPort}",String.valueOf(targetShPort));
+        sb = sb.replace("${appPackPath}",initPackPath() + "/script/bin.sh");
         sb = sb.replace("${targetShUser}",targetShUser);
         sb = sb.replace("${targetShIp}",targetShIp);
         sb = sb.replace("${target_path}",initTargetPath());
@@ -80,9 +103,20 @@ public class PushPackShScriptDto {
     }
 
 
+
+
+
+    /**
+     * 创建目标文件脚本
+     */
+    public String execCreatTargetContentScript(){
+        return "mkdir -p " + initTargetPath();
+    }
+
+
     public String initTargetPath(){
-        return TARGET_FATHER_PATH;
-        //return TARGET_FATHER_PATH + "/" + this.appName +"/"+ this.pushTag ;
+        //return TARGET_FATHER_PATH;
+        return TARGET_FATHER_PATH + "/" + this.appName +"/"+ this.pushTag ;
     }
 
     public String initPackPath(){
@@ -91,7 +125,7 @@ public class PushPackShScriptDto {
         if (StrUtil.isNotEmpty(this.publishModel)){
             sb.append(this.publishModel).append("/");
         }
-        sb.append("target/").append(this.jarName);
+        sb.append("target/");
         return sb.toString();
     }
 

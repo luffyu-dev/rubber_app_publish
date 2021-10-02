@@ -61,7 +61,7 @@ public class MavenResolveManager {
             if (model.getBuild() == null || StringUtils.isEmpty(model.getBuild().getFinalName())){
                 throw new AppPublishException(ErrCodeEnums.RESOLVE_MAVEN_ERROR,"{} pom.xml没有在build中配置finaleName",applicationConfigInfo.getPublishModel());
             }
-            publishTaskInfo.setJarName(model.getBuild().getFinalName());
+            publishTaskInfo.setJarName(model.getBuild().getFinalName() + ".jar");
             publishTaskInfo.setJarVersion(model.getVersion());
         }catch (Exception me){
             if (me instanceof AppPublishException){
