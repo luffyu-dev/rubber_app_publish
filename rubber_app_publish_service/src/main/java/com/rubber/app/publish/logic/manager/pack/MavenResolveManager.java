@@ -45,7 +45,7 @@ public class MavenResolveManager {
         BeanUtils.copyProperties(publishTaskInfo,mavenResolveDto);
         BeanUtils.copyProperties(applicationConfigInfo,mavenResolveDto);
         resolveVersion(mavenResolveDto);
-        publishTaskInfo.setJarName(mavenResolveDto.getJarVersion());
+        publishTaskInfo.setJarName(mavenResolveDto.getJarName());
         publishTaskInfo.setJarVersion(mavenResolveDto.getJarVersion());
     }
 

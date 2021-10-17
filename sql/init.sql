@@ -138,6 +138,6 @@ CREATE TABLE `t_pack_task_order` (
   `version` int(11) NOT NULL DEFAULT '0' COMMENT '版本号',
   PRIMARY KEY (`task_id`) USING BTREE,
   KEY `idx_pack_name_key` (`pack_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COMMENT='应用配置表';
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COMMENT='包任务表';
 
 
