@@ -5,9 +5,11 @@ import com.rubber.app.publish.core.constant.ErrCodeEnums;
 import com.rubber.app.publish.core.entity.ApplicationConfigInfo;
 import com.rubber.app.publish.core.entity.PublishTaskInfo;
 import com.rubber.app.publish.logic.exception.AppPublishException;
+import com.rubber.app.publish.logic.manager.pack.dto.MavenResolveDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -39,8 +41,21 @@ public class MavenResolveManager {
      * @param publishTaskInfo
      */
     public void resolveVersion(PublishTaskInfo publishTaskInfo, ApplicationConfigInfo applicationConfigInfo) {
+        MavenResolveDto mavenResolveDto = new MavenResolveDto();
+        BeanUtils.copyProperties(publishTaskInfo,mavenResolveDto);
+        BeanUtils.copyProperties(applicationConfigInfo,mavenResolveDto);
+        resolveVersion(mavenResolveDto);
+        publishTaskInfo.setJarName(mavenResolveDto.getJarVersion());
+        publishTaskInfo.setJarVersion(mavenResolveDto.getJarVersion());
+    }
+
+
+    /**
+     * 解析当前jar的版本
+     */
+    public void resolveVersion(MavenResolveDto mavenResolveDto) {
         //maven版本的解析
-        String gitHubDownloadUrl = resolveDownloadUrl(publishTaskInfo,applicationConfigInfo);
+        String gitHubDownloadUrl = resolveDownloadUrl(mavenResolveDto);
         log.info("下载的连接是：{}",gitHubDownloadUrl);
         InputStreamReader streamReader = null;
         try {
@@ -59,10 +74,10 @@ public class MavenResolveManager {
                 throw new AppPublishException(ErrCodeEnums.RESOLVE_MAVEN_ERROR);
             }
             if (model.getBuild() == null || StringUtils.isEmpty(model.getBuild().getFinalName())){
-                throw new AppPublishException(ErrCodeEnums.RESOLVE_MAVEN_ERROR,"{} pom.xml没有在build中配置finaleName",applicationConfigInfo.getPublishModel());
+                throw new AppPublishException(ErrCodeEnums.RESOLVE_MAVEN_ERROR,"{} pom.xml没有在build中配置finaleName",mavenResolveDto.getPublishModel());
             }
-            publishTaskInfo.setJarName(model.getBuild().getFinalName() + ".jar");
-            publishTaskInfo.setJarVersion(model.getVersion());
+            mavenResolveDto.setJarName(model.getBuild().getFinalName() + ".jar");
+            mavenResolveDto.setJarVersion(model.getVersion());
         }catch (Exception me){
             if (me instanceof AppPublishException){
                 throw (AppPublishException)me;
@@ -79,22 +94,18 @@ public class MavenResolveManager {
             }
         }
     }
-
-
-
-    private String resolveDownloadUrl(PublishTaskInfo publishTaskInfo, ApplicationConfigInfo applicationConfigInfo){
+    private String resolveDownloadUrl(MavenResolveDto mavenResolveDto){
         //maven版本的解析
-        String gitHubUrl = applicationConfigInfo.getGithubUrl();
+        String gitHubUrl = mavenResolveDto.getGithubUrl();
         String downloadUrl = formatterToDownloadApi(gitHubUrl);
         StringBuilder sb = new StringBuilder(downloadUrl);
-        sb.append("/").append(publishTaskInfo.getAppPackTag()).append("/");
-        if (StrUtil.isNotEmpty(applicationConfigInfo.getPublishModel())){
-            sb.append(applicationConfigInfo.getPublishModel()).append("/");
+        sb.append("/").append(mavenResolveDto.getAppPackTag()).append("/");
+        if (StrUtil.isNotEmpty(mavenResolveDto.getPublishModel())){
+            sb.append(mavenResolveDto.getPublishModel()).append("/");
         }
         sb.append("pom.xml");
         return sb.toString();
     }
-
 
 
     private String formatterToDownloadApi(String cloneUrl){

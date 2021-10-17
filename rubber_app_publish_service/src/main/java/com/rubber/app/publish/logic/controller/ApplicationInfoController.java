@@ -10,6 +10,7 @@ import com.rubber.app.publish.logic.dto.AppInfoDto;
 import com.rubber.app.publish.logic.service.app.AppManagerService;
 import com.rubber.base.components.mysql.plugins.admin.BaseAdminController;
 import com.rubber.base.components.mysql.plugins.admin.page.PageModel;
+import com.rubber.base.components.mysql.plugins.admin.page.SortType;
 import com.rubber.common.utils.result.ResultMsg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +40,8 @@ public class ApplicationInfoController extends BaseAdminController {
     @GetMapping("/list")
     public ResultMsg list(String json){
         PageModel pageModel = decodeForJsonString(json);
+        pageModel.setSort(new String[]{"id"});
+        pageModel.setOrder(SortType.desc);
         return ResultMsg.success(iApplicationConfigInfoService.pageBySelect(pageModel, ApplicationConfigInfo.class, null));
     }
 

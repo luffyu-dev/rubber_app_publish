@@ -27,6 +27,12 @@ public interface AppPublishTaskService {
 
 
     /**
+     * 任务id 查询任务详情
+     */
+    void stopTask(Integer taskId);
+
+
+    /**
      * 按照任务id和环境查找信息信息
      * @param taskId
      * @param env

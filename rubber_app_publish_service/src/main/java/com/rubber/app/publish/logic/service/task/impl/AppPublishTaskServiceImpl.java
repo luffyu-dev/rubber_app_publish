@@ -119,6 +119,24 @@ public class AppPublishTaskServiceImpl implements AppPublishTaskService {
     }
 
     /**
+     * 任务id 查询任务详情
+     *
+     * @param taskId
+     */
+    @Override
+    public void stopTask(Integer taskId) {
+        PublishTaskInfo publishTaskInfo = iPublishTaskInfoService.getById(taskId);
+        if (publishTaskInfo == null){
+            throw new AppPublishException(ErrCodeEnums.DATA_IS_NOT_EXIST);
+        }
+        if (publishTaskInfo.getTaskStatus() >= PushStatusEnums.FINISH.getCode()){
+            throw new AppPublishException(ErrCodeEnums.PUBLISH_SUCCESS);
+        }
+        publishTaskInfo.setTaskStatus(PushStatusEnums.STOP.getCode());
+        iPublishTaskInfoService.updateById(publishTaskInfo);
+    }
+
+    /**
      * 按照任务id和环境查找信息信息
      *
      * @param taskId
@@ -281,6 +299,8 @@ public class AppPublishTaskServiceImpl implements AppPublishTaskService {
                 AppPushResult appPushResult = rubberPushManager.pushPackage(appPushDto);
                 if (appPushResult.isSuccess()){
                     publishOrder.setPublishStatus(PushStatusEnums.WAIT_PUBLISH.getCode());
+                    publishOrder.setPublishJarPath(appPushResult.getPushTargetPath());
+                    publishOrder.setPublishJarName(appPushResult.getPushJarName());
                 }else {
                     data.put("errMsg",appPushResult.getErrMsg());
                     publishOrder.setPublishStatus(PushStatusEnums.PUSHING_ERROR.getCode());

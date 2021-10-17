@@ -20,20 +20,5 @@
         <module>rubber_app_publish_web</module>
     </modules>
 
-<!--    <build>-->
-<!--        <plugins>-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-jar-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    &lt;!&ndash; 指定打包的jar包输出路径&ndash;&gt;-->
-<!--                    <outputDirectory>-->
-<!--                        ${project.parent.basedir}/target-->
-<!--                    </outputDirectory>-->
-<!--                    &lt;!&ndash;不打入jar包的文件类型或者路径&ndash;&gt;-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-<!--        </plugins>-->
-<!--    </build>-->
 
 </project>

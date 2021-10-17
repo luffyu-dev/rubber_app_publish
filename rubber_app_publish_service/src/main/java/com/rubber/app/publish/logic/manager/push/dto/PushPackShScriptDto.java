@@ -16,7 +16,7 @@ public class PushPackShScriptDto {
     //推送jar的版本
     private static final String BASE_PUSH_JAR_SCRIPT = "scp -P ${targetShPort} /var/jenkins_home/workspace/${appPackPath} ${targetShUser}@${targetShIp}:${target_path}";
     //推送脚本
-    private static final String BASE_PUSH_STARTSH_SCRIPT = "scp -P ${targetShPort} /var/jenkins_home/workspace/${appPackPath} ${targetShUser}@${targetShIp}:${target_path}/script";
+    private static final String BASE_PUSH_STARTSH_SCRIPT = "scp -P ${targetShPort} /var/jenkins_home/workspace/${appPackPath}/script/bin.sh ${targetShUser}@${targetShIp}:${target_path}/script";
 
     /**
      * 目标父目录
@@ -76,14 +76,13 @@ public class PushPackShScriptDto {
 
     public Set<String> execScript(){
         Set<String> sh = new HashSet<>();
-        sh.add(getPushJarStartShScript());
         sh.add(getPushJarScript());
         return sh;
     }
 
 
     public String getPushJarScript(){
-        String sb = BASE_PUSH_STARTSH_SCRIPT;
+        String sb = BASE_PUSH_JAR_SCRIPT;
         sb = sb.replace("${targetShPort}",String.valueOf(targetShPort));
         sb = sb.replace("${appPackPath}",initPackPath() + this.jarName);
         sb = sb.replace("${targetShUser}",targetShUser);
@@ -95,7 +94,7 @@ public class PushPackShScriptDto {
     public String getPushJarStartShScript(){
         String sb = BASE_PUSH_STARTSH_SCRIPT;
         sb = sb.replace("${targetShPort}",String.valueOf(targetShPort));
-        sb = sb.replace("${appPackPath}",initPackPath() + "/script/bin.sh");
+        sb = sb.replace("${appPackPath}",initPackPath());
         sb = sb.replace("${targetShUser}",targetShUser);
         sb = sb.replace("${targetShIp}",targetShIp);
         sb = sb.replace("${target_path}",initTargetPath());
@@ -110,7 +109,7 @@ public class PushPackShScriptDto {
      * 创建目标文件脚本
      */
     public String execCreatTargetContentScript(){
-        return "mkdir -p " + initTargetPath();
+        return "mkdir -p " + initTargetPath() + "/script";
     }
 
 

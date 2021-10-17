@@ -33,4 +33,9 @@ public class AppPushResult {
      * 推送成功的目录
      */
     private String pushTargetPath;
+
+    /**
+     * 推送的jar名称
+     */
+    private String pushJarName;
 }

@@ -13,6 +13,7 @@ import com.rubber.app.publish.core.service.IServerDeviceInfoService;
 import com.rubber.app.publish.logic.manager.push.sh.RubberShPushManager;
 import com.rubber.base.components.mysql.plugins.admin.BaseAdminController;
 import com.rubber.base.components.mysql.plugins.admin.page.PageModel;
+import com.rubber.base.components.mysql.plugins.admin.page.SortType;
 import com.rubber.common.utils.result.ResultMsg;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -44,6 +45,8 @@ public class ServerDeviceInfoController extends BaseAdminController {
     @GetMapping("/list")
     public ResultMsg list(String json){
         PageModel pageModel = decodeForJsonString(json);
+        pageModel.setSort(new String[]{"id"});
+        pageModel.setOrder(SortType.desc);
         return ResultMsg.success(iServerDeviceInfoService.pageBySelect(pageModel, ServerDeviceInfo.class, null));
     }
 

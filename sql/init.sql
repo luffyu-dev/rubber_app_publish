@@ -15,7 +15,6 @@ CREATE TABLE `t_application_config_info` (
   `modify_time` datetime DEFAULT NULL COMMENT '最后更新时间',
   `version` int(11) NOT NULL DEFAULT '0' COMMENT '版本号',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uniq_app_port` (`app_type`) USING BTREE,
   KEY `idx_app_name_key` (`app_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='应用配置表';
 
@@ -100,3 +99,45 @@ CREATE TABLE `t_application_publish_order` (
   PRIMARY KEY (`publish_id`) USING BTREE,
   KEY `idx_app_name_key` (`task_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='应用配置表';
+
+
+
+
+CREATE TABLE `t_pack_info` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
+  `pack_name` varchar(50) NOT NULL DEFAULT '' COMMENT '包名称',
+  `github_url` varchar(255) NOT NULL DEFAULT '' COMMENT 'github的应用地址',
+  `maven_path` varchar(255) NOT NULL DEFAULT '' COMMENT '服务打包地址',
+  `publish_model` varchar(255) DEFAULT NULL COMMENT '发布的子模块',
+  `jdk_version` varchar(50) NOT NULL DEFAULT '1.8' COMMENT 'jdk版本',
+  `deploy_path` varchar(255) NOT NULL DEFAULT '' COMMENT '部署路径',
+  `extend_params` varchar(1024) NOT NULL DEFAULT '' COMMENT '扩展参数信息',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `modify_time` datetime DEFAULT NULL COMMENT '最后更新时间',
+  `version` int(11) NOT NULL DEFAULT '0' COMMENT '版本号',
+  PRIMARY KEY (`id`),
+  KEY `idx_app_name_key` (`pack_name`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='包配置表';
+
+-- 发布任务
+-- ----------------------------
+CREATE TABLE `t_pack_task_order` (
+  `task_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '发布任务的id',
+  `task_name` varchar(50) NOT NULL DEFAULT '' COMMENT '分布任务的名称',
+  `pack_name` varchar(50) NOT NULL DEFAULT '' COMMENT '应用名称',
+  `app_pack_tag` varchar(64) NOT NULL DEFAULT 'master' COMMENT 'app的打包tag',
+  `task_status` smallint(6) NOT NULL DEFAULT '1' COMMENT '发布状态 包含了任务的创建和打包',
+  `jenkins_server_key` varchar(255) DEFAULT NULL COMMENT 'jenkins的服务',
+  `jar_name` varchar(255) DEFAULT NULL COMMENT '当前jar的版本',
+  `jar_version` varchar(255) DEFAULT NULL COMMENT '当前jar包版本',
+  `job_url` varchar(255) NOT NULL DEFAULT '' COMMENT '任务的url',
+  `job_params` varchar(1024) NOT NULL DEFAULT '' COMMENT '任务参数',
+  `operator` varchar(50) NOT NULL DEFAULT '' COMMENT '操作人',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `modify_time` datetime DEFAULT NULL COMMENT '最后更新时间',
+  `version` int(11) NOT NULL DEFAULT '0' COMMENT '版本号',
+  PRIMARY KEY (`task_id`) USING BTREE,
+  KEY `idx_pack_name_key` (`pack_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COMMENT='应用配置表';
+
+

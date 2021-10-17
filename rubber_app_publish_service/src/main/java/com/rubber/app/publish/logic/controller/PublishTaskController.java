@@ -5,6 +5,7 @@ import com.rubber.app.publish.core.service.IPublishTaskInfoService;
 import com.rubber.app.publish.logic.service.task.AppPublishTaskService;
 import com.rubber.base.components.mysql.plugins.admin.BaseAdminController;
 import com.rubber.base.components.mysql.plugins.admin.page.PageModel;
+import com.rubber.base.components.mysql.plugins.admin.page.SortType;
 import com.rubber.common.utils.result.ResultMsg;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,8 @@ public class PublishTaskController extends BaseAdminController {
     @GetMapping("/list")
     public ResultMsg list(String json){
         PageModel pageModel = decodeForJsonString(json);
+        pageModel.setSort(new String[]{"task_id"});
+        pageModel.setOrder(SortType.desc);
         return ResultMsg.success(iPublishTaskInfoService.pageBySelect(pageModel, PublishTaskInfo.class, null));
     }
 
@@ -52,6 +55,15 @@ public class PublishTaskController extends BaseAdminController {
     @GetMapping("/info/{taskId}")
     public ResultMsg infoTask(@PathVariable("taskId")Integer taskId){
         return ResultMsg.success(appPublishTaskService.getTaskInfo(taskId));
+    }
+
+    /**
+     * 任务信息
+     */
+    @PostMapping("/stop/{taskId}")
+    public ResultMsg stopTask(@PathVariable("taskId")Integer taskId){
+        appPublishTaskService.stopTask(taskId);
+        return ResultMsg.success();
     }
 
     /**

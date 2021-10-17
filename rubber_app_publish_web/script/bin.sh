@@ -1,7 +1,7 @@
 #!/bin/bash
-APP_NAME=hotel_data_dock
-APP_PATH=/home/application/project0188/hotel_data_dock_3.0.7_release.jar
-APP_LOG_PATH=/home/application/project0188/log/info.log
+APP_NAME=rubber_app_publish_web.jar
+APP_PUBLISH_PATH=/home/application/rubber_app_publish/dev_no_nacos/
+APP_PUBLISH_LOG_PATH=/home/application/rubber_app_publish/dev_no_nacos/log/info.log
 
 #使用说明，用来提示输入参数
 usage() {
@@ -27,7 +27,7 @@ start(){
   if [ $? -eq 0 ]; then
     echo "${APP_NAME} is already running. pid=${pid}"
   else
-    nohup java -jar ${APP_PATH} > ${APP_LOG_PATH}  2>&1 &
+    nohup java -jar ${APP_PUBLISH_PATH}${APP_NAME} > ${APP_PUBLISH_LOG_PATH}  2>&1 &
     sleep 3
     echo "app run success"
   fi

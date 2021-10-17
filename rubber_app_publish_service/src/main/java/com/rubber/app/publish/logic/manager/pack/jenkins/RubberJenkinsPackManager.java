@@ -15,7 +15,9 @@ import com.rubber.app.publish.logic.manager.pack.dto.AppPackDto;
 import com.rubber.app.publish.logic.manager.pack.dto.AppPackResponse;
 import com.rubber.app.publish.logic.manager.pack.dto.AppPackStatusDto;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
 
@@ -187,7 +189,8 @@ public class RubberJenkinsPackManager implements RubberPackManager {
      * @param appPackDto
      */
     public void doCreateJob(JenkinsServer jenkinsServer,AppPackDto appPackDto) throws IOException {
-        Document document = XmlUtil.readXML(new File("rubber_app_publish_service/src/main/resources/jenkinsTemplate.xml"));
+        ClassPathResource classPathResource = new ClassPathResource("jenkinsTemplate.xml");
+        Document document = XmlUtil.readXML(classPathResource.getInputStream());
         String xml = XmlUtil.toStr(document);
         xml = StringUtils.replace(xml,"${git_hub_url}",appPackDto.getGitHubUrl());
         jenkinsServer.createJob(appPackDto.getJobName(),xml);

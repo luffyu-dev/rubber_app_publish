@@ -13,66 +13,74 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * 应用配置表
+ * 打包配置表
  * </p>
  *
  * @author luffyu
- * @since 2021-08-29
+ * @since 2021-10-17
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("t_application_publish_order")
-public class ApplicationPublishOrder extends BaseEntity {
+@TableName("t_pack_task_order")
+public class PackTaskOrder extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 自增发布id
+     * 发布任务的id
      */
-    @TableId(value = "publish_id", type = IdType.AUTO)
-    private Integer publishId;
-
-    /**
-     * 任务的id
-     */
+    @TableId(value = "task_id", type = IdType.AUTO)
     private Integer taskId;
 
     /**
-     * 需要发布的应用id
+     * 分布任务的名称
      */
-    private Integer applicationId;
+    private String taskName;
 
     /**
-     * 发布环境
+     * 应用名称
      */
-    private Integer appEnv;
-
+    private String packName;
 
     /**
-     * 关联的服务key值
+     * app的打包tag
      */
-    private String serverKey;
-
-
-    /**
-     * 发布状态
-     */
-    private Integer publishStatus;
+    private String appPackTag;
 
     /**
-     * 发布的参数
+     * 发布状态 包含了任务的创建和打包
      */
-    private String publishParams;
+    private Integer taskStatus;
 
     /**
-     * 发布jar的位置
+     * jenkins的服务
      */
-    private String publishJarPath;
+    private String jenkinsServerKey;
 
     /**
-     * 发布jar的名称
+     * 当前jar的版本
      */
-    private String publishJarName;
+    private String jarName;
+
+    /**
+     * 当前jar包版本
+     */
+    private String jarVersion;
+
+    /**
+     * 任务的url
+     */
+    private String jobUrl;
+
+    /**
+     * 任务参数
+     */
+    private String jobParams;
+
+    /**
+     * 操作人
+     */
+    private String operator;
 
     /**
      * 创建时间

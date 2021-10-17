@@ -11,6 +11,8 @@ public enum  PushStatusEnums {
     /**
      * 发布状态
      */
+    STOP(0,"关闭",1),
+
     WAIT_PACK(10,"待打包",1),
     START_PACK(11,"开始打包",1),
     PACKING(12,"打包中",1),

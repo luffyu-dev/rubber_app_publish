@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @ControllerAdvice
 @Slf4j
-public class ExceptionHandelConfig {
+public class AppExceptionHandelConfig {
 
 
     @ExceptionHandler(value = {BaseResultRunTimeException.class, BaseResultException.class})

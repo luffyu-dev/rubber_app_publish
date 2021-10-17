@@ -20,6 +20,6 @@ public class RubberUserCodeGenerator {
         configBean.setAuthor("luffyu");
 
         RubberSqlCodeGenerator rubberSqlCodeGenerator =  new RubberSqlCodeGenerator(configBean);
-        rubberSqlCodeGenerator.create("t_application_publish_order","t_publish_task_info");
+        rubberSqlCodeGenerator.create("t_pack_info","t_pack_task_order");
     }
 }

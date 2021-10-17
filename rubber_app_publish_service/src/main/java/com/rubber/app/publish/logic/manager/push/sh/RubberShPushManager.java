@@ -144,17 +144,20 @@ public class RubberShPushManager implements RubberPushManager {
             session = connection.openSession();
             stdOut = new StreamGobbler(session.getStdout());
             stdErr = new StreamGobbler(session.getStderr());
-            log.info("推送执行的脚本为:{}", pushPackShScriptDto.execScript());
             for (String s:pushPackShScriptDto.execScript()){
+                log.info("推送执行的脚本为:{}", s);
                 session.execCommand(s);
-            }
-            log.info("执行脚本成功...");
-            String outStr = processStream(stdOut, StandardCharsets.UTF_8.name());
-            String outErr = processStream(stdErr, StandardCharsets.UTF_8.name());
-            log.info("获取执行结果...succ={},err={}",outStr,outErr);
-            if (session.getExitStatus() != null && session.getExitStatus() == 0){
-                appPushResult.setSuccess(true);
-                appPushResult.setPushTargetPath(pushPackShScriptDto.initTargetPath());
+                log.info("执行脚本成功...");
+                String outStr = processStream(stdOut, StandardCharsets.UTF_8.name());
+                String outErr = processStream(stdErr, StandardCharsets.UTF_8.name());
+                log.info("获取执行结果...succ={},err={}",outStr,outErr);
+                if (session.getExitStatus() != null && session.getExitStatus() == 0){
+                    appPushResult.setSuccess(true);
+                    appPushResult.setPushTargetPath(pushPackShScriptDto.initTargetPath());
+                    appPushResult.setPushJarName(pushPackShScriptDto.getJarName());
+                }else {
+                    appPushResult.setSuccess(false);
+                }
             }
             appPushResult.setExecStatus(session.getExitStatus());
             return appPushResult;

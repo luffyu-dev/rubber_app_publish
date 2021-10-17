@@ -13,66 +13,59 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * 应用配置表
+ * 包配置表
  * </p>
  *
  * @author luffyu
- * @since 2021-08-29
+ * @since 2021-10-17
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("t_application_publish_order")
-public class ApplicationPublishOrder extends BaseEntity {
+@TableName("t_pack_info")
+public class PackInfo extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 自增发布id
+     * 自增id
      */
-    @TableId(value = "publish_id", type = IdType.AUTO)
-    private Integer publishId;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
     /**
-     * 任务的id
+     * 包名称
      */
-    private Integer taskId;
+    private String packName;
 
     /**
-     * 需要发布的应用id
+     * github的应用地址
      */
-    private Integer applicationId;
+    private String githubUrl;
 
     /**
-     * 发布环境
+     * 服务打包地址
      */
-    private Integer appEnv;
-
+    private String mavenPath;
 
     /**
-     * 关联的服务key值
+     * 发布的子模块
      */
-    private String serverKey;
-
-
-    /**
-     * 发布状态
-     */
-    private Integer publishStatus;
+    private String publishModel;
 
     /**
-     * 发布的参数
+     * jdk版本
      */
-    private String publishParams;
+    private String jdkVersion;
 
     /**
-     * 发布jar的位置
+     * 部署路径
      */
-    private String publishJarPath;
+    private String deployPath;
 
     /**
-     * 发布jar的名称
+     * 扩展参数信息
      */
-    private String publishJarName;
+    private String extendParams;
 
     /**
      * 创建时间
