@@ -4,11 +4,13 @@ import ch.ethz.ssh2.Connection;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.app.publish.core.constant.ErrCodeEnums;
+import com.rubber.app.publish.core.constant.ServerDeviceTypeEnums;
 import com.rubber.app.publish.core.constant.ServerStatusEnums;
 import com.rubber.app.publish.core.entity.ServerDeviceInfo;
 import com.rubber.app.publish.core.exception.AppPublishParamException;
 import com.rubber.app.publish.logic.dto.ServerDeviceInfoDto;
 import com.rubber.app.publish.core.service.IServerDeviceInfoService;
+import com.rubber.app.publish.logic.manager.pack.config.JenkinsServerProvider;
 import com.rubber.app.publish.logic.manager.push.sh.RubberShPushManager;
 import com.rubber.base.components.mysql.plugins.admin.BaseAdminController;
 import com.rubber.base.components.mysql.plugins.admin.page.PageModel;
@@ -16,6 +18,7 @@ import com.rubber.base.components.mysql.plugins.admin.page.SortType;
 import com.rubber.base.components.util.result.ResultMsg;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -34,6 +37,9 @@ public class ServerDeviceInfoController extends BaseAdminController {
 
     @Resource
     private RubberShPushManager rubberShPushManager;
+
+    @Resource
+    private JenkinsServerProvider jenkinsServerProvider;
 
 
     /**
@@ -72,6 +78,9 @@ public class ServerDeviceInfoController extends BaseAdminController {
         ServerDeviceInfo serverDeviceInfo = new ServerDeviceInfo();
         BeanUtils.copyProperties(serverDeviceInfoDto,serverDeviceInfo);
         iServerDeviceInfoService.save(serverDeviceInfo);
+        if (ServerDeviceTypeEnums.JENKINS.getKey().equals(serverDeviceInfo.getServerType())){
+            jenkinsServerProvider.initJenkinsService();
+        }
         return ResultMsg.success();
     }
 

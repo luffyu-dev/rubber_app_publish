@@ -106,7 +106,8 @@ public class ServerDeviceInfoServiceImpl extends BaseAdminService<ServerDeviceIn
             return null;
         }
         QueryWrapper<ServerDeviceInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("server_type",deviceTypeEnums.getKey());
+        queryWrapper.lambda().eq(ServerDeviceInfo::getServerType,deviceTypeEnums.getKey())
+                .eq(ServerDeviceInfo::getServerStatus,ServerStatusEnums.NORMAL.getCode());
         return list(queryWrapper);
     }
 

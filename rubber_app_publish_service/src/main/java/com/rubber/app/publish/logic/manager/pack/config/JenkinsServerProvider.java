@@ -1,6 +1,7 @@
 package com.rubber.app.publish.logic.manager.pack.config;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.offbytwo.jenkins.JenkinsServer;
 import com.rubber.app.publish.core.constant.ServerDeviceTypeEnums;
@@ -58,7 +59,7 @@ public class JenkinsServerProvider implements ApplicationContextAware {
             return null;
         }
         if (StrUtil.isEmpty(key)){
-            return jenkinsServerProvider.values().iterator().next();
+            return getRandomOne();
         }else {
             return jenkinsServerProvider.get(key);
         }
@@ -86,5 +87,12 @@ public class JenkinsServerProvider implements ApplicationContextAware {
         }
     }
 
+
+    /**
+     * 随机返回一个服务
+     */
+    private JenkinsBeanServer getRandomOne(){
+        return jenkinsServerProvider.values().iterator().next();
+    }
 
 }
