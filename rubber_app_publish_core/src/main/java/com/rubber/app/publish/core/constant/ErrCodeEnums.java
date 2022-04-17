@@ -1,6 +1,7 @@
 package com.rubber.app.publish.core.constant;
 
-import com.rubber.common.utils.result.code.ICodeHandle;
+
+import com.rubber.base.components.util.result.code.ICodeHandle;
 
 /**
  * @author luffyu

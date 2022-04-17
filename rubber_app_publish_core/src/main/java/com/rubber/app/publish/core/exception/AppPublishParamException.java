@@ -1,8 +1,8 @@
 package com.rubber.app.publish.core.exception;
 
-import com.rubber.common.utils.result.IResultHandle;
-import com.rubber.common.utils.result.code.ICodeHandle;
-import com.rubber.common.utils.result.exception.BaseResultRunTimeException;
+
+import com.rubber.base.components.util.result.code.ICodeHandle;
+import com.rubber.base.components.util.result.exception.BaseResultRunTimeException;
 
 /**
  * @author luffyu

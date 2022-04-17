@@ -1,10 +1,10 @@
 package com.rubber.app.publish.logic.config;
 
-import com.rubber.common.utils.result.IResultHandle;
-import com.rubber.common.utils.result.ResultMsg;
-import com.rubber.common.utils.result.exception.BaseResultException;
-import com.rubber.common.utils.result.exception.BaseResultRunTimeException;
-import com.rubber.common.utils.result.exception.IResultException;
+import com.rubber.base.components.util.result.IResultHandle;
+import com.rubber.base.components.util.result.ResultMsg;
+import com.rubber.base.components.util.result.exception.BaseResultException;
+import com.rubber.base.components.util.result.exception.BaseResultRunTimeException;
+import com.rubber.base.components.util.result.exception.IResultException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

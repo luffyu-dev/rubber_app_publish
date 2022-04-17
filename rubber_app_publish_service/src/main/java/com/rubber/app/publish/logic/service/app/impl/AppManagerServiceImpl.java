@@ -15,9 +15,8 @@ import com.rubber.app.publish.core.service.IServerDeviceInfoService;
 import com.rubber.app.publish.logic.dto.AppConfigServiceDto;
 import com.rubber.app.publish.logic.dto.AppInfoDto;
 import com.rubber.app.publish.logic.service.app.AppManagerService;
-import com.rubber.common.utils.enums.EnvEnum;
+import com.rubber.base.components.util.enums.EnvEnum;
 import lombok.extern.slf4j.Slf4j;
-import org.codehaus.groovy.util.ListHashMap;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

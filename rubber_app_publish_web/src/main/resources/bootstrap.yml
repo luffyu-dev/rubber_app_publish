@@ -10,39 +10,44 @@ spring:
     nacos:
       config:
         file-extension: yml
+        server-addr: 192.168.1.104:28848
+        namespace: rubber-dev
+      discovery:
+        server-addr: 192.168.1.104:28848
+        namespace: rubber-dev
 
 rubber:
   proxy:
     set:
       dbInstance: oaAdminInstance
-    config:
-      dbInstances:
-        oaAdminInstance:
-          instanceName: oaAdminInstance
-          type: SINGLE
-          config:
-            type: com.alibaba.druid.pool.DruidDataSource
-            platform: mysql
-            initialSize: 5
-            minIdle: 5
-            maxIdle: 5
-            maxActive: 50
-            maxWait: 60000
-            timeBetweenEvictionRunsMillis: 60000
-            minEvictableIdleTimeMillis: 300000
-            validationQuery: SELECT 1 FROM DUAL
-            testWhileIdle: true
-            testOnBorrow: true
-            testOnReturn: true
-            poolPreparedStatements: true
-            maxPoolPreparedStatementPerConnectionSize: 20
-            # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
-            filters: stat,wall,log4j
-            # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
-            connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-          connects:
-            - url: jdbc:mysql://127.0.0.1:3306/rubber_oa_admin_db?useUnicode=true&characterEncoding=utf-8
-              username: root
-              password: root
-              driverClassName: com.mysql.cj.jdbc.Driver
-              dbName: rubber_oa_admin_db
+#    config:
+#      dbInstances:
+#        oaAdminInstance:
+#          instanceName: oaAdminInstance
+#          type: SINGLE
+#          config:
+#            type: com.alibaba.druid.pool.DruidDataSource
+#            platform: mysql
+#            initialSize: 5
+#            minIdle: 5
+#            maxIdle: 5
+#            maxActive: 50
+#            maxWait: 60000
+#            timeBetweenEvictionRunsMillis: 60000
+#            minEvictableIdleTimeMillis: 300000
+#            validationQuery: SELECT 1 FROM DUAL
+#            testWhileIdle: true
+#            testOnBorrow: true
+#            testOnReturn: true
+#            poolPreparedStatements: true
+#            maxPoolPreparedStatementPerConnectionSize: 20
+#            # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+#            filters: stat,wall,log4j
+#            # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+#            connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+#          connects:
+#            - url: jdbc:mysql://127.0.0.1:3306/rubber_oa_admin_db?useUnicode=true&characterEncoding=utf-8
+#              username: root
+#              password: root
+#              driverClassName: com.mysql.cj.jdbc.Driver
+#              dbName: rubber_oa_admin_db

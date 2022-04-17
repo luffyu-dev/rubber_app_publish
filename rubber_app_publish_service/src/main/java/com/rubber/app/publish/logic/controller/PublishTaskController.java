@@ -6,7 +6,7 @@ import com.rubber.app.publish.logic.service.task.AppPublishTaskService;
 import com.rubber.base.components.mysql.plugins.admin.BaseAdminController;
 import com.rubber.base.components.mysql.plugins.admin.page.PageModel;
 import com.rubber.base.components.mysql.plugins.admin.page.SortType;
-import com.rubber.common.utils.result.ResultMsg;
+import com.rubber.base.components.util.result.ResultMsg;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
