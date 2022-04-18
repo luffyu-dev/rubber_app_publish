@@ -40,6 +40,11 @@ public class AppPackDto {
     private String packMavenPath = "pom.xml";
 
 
+    /**
+     * jenkins的服务
+     */
+    private String jenkinsServerKey;
+
 
 
 }

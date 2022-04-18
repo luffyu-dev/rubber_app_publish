@@ -2,6 +2,8 @@ package com.rubber.app.publish.logic.manager.pack.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author luffyu
  * Created on 2021/10/17
@@ -40,4 +42,9 @@ public class MavenResolveDto {
      * jar包版本
      */
     private String jarVersion;
+
+    /**
+     * 子模块信息
+     */
+    private List<String> modules;
 }

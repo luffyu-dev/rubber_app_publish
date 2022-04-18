@@ -51,7 +51,7 @@ public class RubberJenkinsPackManager implements RubberPackManager {
     @Override
     public AppPackResponse pack(AppPackDto appPackDto) {
         AppPackResponse appPackResponse = new AppPackResponse();
-        JenkinsBeanServer jenkinsBeanServer  =  jenkinsServerProvider.getJenkinsServer();
+        JenkinsBeanServer jenkinsBeanServer  =  jenkinsServerProvider.getJenkinsServer(appPackDto.getJenkinsServerKey());
         JenkinsServer jenkinsServer = jenkinsBeanServer.getJenkinsServer();
         try {
             log.info("开始执行打包逻辑,packName={}",appPackDto.getJobName());

@@ -1,5 +1,7 @@
 package com.rubber.app.publish.logic.service.packOrder;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.rubber.app.publish.core.constant.ErrCodeEnums;
 import com.rubber.app.publish.core.constant.PushStatusEnums;
 import com.rubber.app.publish.core.entity.ApplicationConfigInfo;
@@ -155,6 +157,9 @@ public class PackOrderTaskService {
         mavenResolveManager.resolveVersion(mavenResolveDto);
         packTaskOrder.setJarName(mavenResolveDto.getJarName());
         packTaskOrder.setJarVersion(mavenResolveDto.getJarVersion());
+        JSONObject jb = new JSONObject();
+        jb.put("modules",mavenResolveDto.getModules());
+        packTaskOrder.setJobParams(jb.toJSONString());
         packTaskOrder.setTaskStatus(PushStatusEnums.WAIT_PACK.getCode());
     }
 
@@ -166,6 +171,7 @@ public class PackOrderTaskService {
         appPackDto.setGitHubUrl(packInfo.getGithubUrl());
         appPackDto.setPackMavenPath(packInfo.getMavenPath());
         appPackDto.setGitTag(packTaskOrder.getAppPackTag());
+        appPackDto.setJenkinsServerKey(packTaskOrder.getJenkinsServerKey());
         return appPackDto;
 
     }

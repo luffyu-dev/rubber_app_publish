@@ -9,6 +9,7 @@ import com.rubber.app.publish.core.entity.ApplicationConfigInfo;
 import com.rubber.app.publish.core.entity.ApplicationServerInfo;
 import com.rubber.app.publish.core.entity.ServerDeviceInfo;
 import com.rubber.app.publish.core.service.IServerDeviceInfoService;
+import com.rubber.app.publish.logic.exception.AppPublishException;
 import com.rubber.app.publish.logic.manager.pack.dto.AppPackDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
@@ -58,11 +59,16 @@ public class JenkinsServerProvider implements ApplicationContextAware {
         if (CollUtil.isEmpty(jenkinsServerProvider)){
             return null;
         }
+        JenkinsBeanServer jenkinsBeanServer;
         if (StrUtil.isEmpty(key)){
-            return getRandomOne();
+            jenkinsBeanServer = getRandomOne();
         }else {
-            return jenkinsServerProvider.get(key);
+            jenkinsBeanServer = jenkinsServerProvider.get(key);
         }
+        if (jenkinsBeanServer == null){
+            throw new AppPublishException("pack server not found");
+        }
+        return jenkinsBeanServer;
     }
 
 

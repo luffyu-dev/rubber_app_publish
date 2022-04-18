@@ -73,10 +73,15 @@ public class MavenResolveManager {
             if (model == null){
                 throw new AppPublishException(ErrCodeEnums.RESOLVE_MAVEN_ERROR);
             }
-            if (model.getBuild() == null || StringUtils.isEmpty(model.getBuild().getFinalName())){
-                throw new AppPublishException(ErrCodeEnums.RESOLVE_MAVEN_ERROR,"{} pom.xml没有在build中配置finaleName",mavenResolveDto.getPublishModel());
+            String jarName = model.getBuild() != null ? model.getBuild().getFinalName() : null;
+            if (StrUtil.isEmpty(jarName)){
+                jarName = model.getArtifactId();
             }
-            mavenResolveDto.setJarName(model.getBuild().getFinalName() + ".jar");
+            if (StringUtils.isEmpty(jarName)){
+                throw new AppPublishException(ErrCodeEnums.RESOLVE_MAVEN_ERROR,"，pom.xml格式错误，无法加载ArtifactId");
+            }
+            mavenResolveDto.setModules(model.getModules());
+            mavenResolveDto.setJarName(jarName + ".jar");
             mavenResolveDto.setJarVersion(model.getVersion());
         }catch (Exception me){
             if (me instanceof AppPublishException){
