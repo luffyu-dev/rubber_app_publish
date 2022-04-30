@@ -12,10 +12,24 @@
     <artifactId>rubber_app_publish_service</artifactId>
 
     <dependencies>
+
+
+        <dependency>
+            <groupId>com.rubber</groupId>
+            <artifactId>rubber_basic_service_boot_start</artifactId>
+        </dependency>
+
+
         <dependency>
             <groupId>com.offbytwo.jenkins</groupId>
             <artifactId>jenkins-client</artifactId>
             <version>0.3.8</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

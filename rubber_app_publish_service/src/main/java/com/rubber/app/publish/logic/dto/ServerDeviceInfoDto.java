@@ -4,7 +4,6 @@ import com.rubber.app.publish.core.entity.ServerDeviceInfo;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
-import javax.validation.constraints.NotNull;
 
 /**
  * @author luffyu
@@ -21,62 +20,52 @@ public class ServerDeviceInfoDto {
     /**
      * 服务设备的唯一key值
      */
-    @NotNull
     private String serverKey;
 
     /**
      * 服务名称
      */
-    @NotNull
     private String serverName;
 
     /**
      * 服务类型 jenkins表示打包服务器，app表示应用服务器 mysql表示db服务器 redis表示缓存服务器
      */
-    @NotNull
     private String serverType;
 
     /**
      * 服务器ip
      */
-    @NotNull
     private String serverIp;
 
     /**
      * 服务器端口
      */
-    @NotNull
     private Integer serverShPort;
 
     /**
      * 服务器的用户
      */
-    @NotNull
     private String serverShUser;
 
     /**
      * 服务器的密码
      */
-    @NotNull
     private String serverShPsd;
 
 
     /**
      * 服务器的地址
      */
-    @NotNull
     private String serverUrl;
 
     /**
      * 服务的登录账户名
      */
-    @NotNull
     private String serverUser;
 
     /**
      * 服务的登录token
      */
-    @NotNull
     private String serverToken;
 
     /**

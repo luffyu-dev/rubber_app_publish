@@ -1,5 +1,5 @@
 server:
-  port: 38002
+  port: 38012
   servlet:
     context-path: /oa-api
 
@@ -10,9 +10,6 @@ spring:
     nacos:
       config:
         file-extension: yml
-        server-addr: 192.168.1.104:28848
-        namespace: rubber-dev
-      discovery:
         server-addr: 192.168.1.104:28848
         namespace: rubber-dev
 

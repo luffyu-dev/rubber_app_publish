@@ -10,7 +10,6 @@
 
     <groupId>com.rubber.app.publish</groupId>
     <artifactId>rubber_app_publish_web</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
     <name>rubber_app_publish_web</name>
     <description>app publish service</description>
     <properties>
@@ -18,8 +17,8 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>com.rubber</groupId>
+            <artifactId>rubber_basic_web_boot_start</artifactId>
         </dependency>
 
         <dependency>
@@ -34,17 +33,6 @@
             <version>${rubber.version}</version>
         </dependency>
 
-<!--        开启nacos用此配置-->
-        <dependency>
-            <groupId>com.rubber</groupId>
-            <artifactId>base_config</artifactId>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-context -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-context</artifactId>
-        </dependency>
 
     </dependencies>
 
