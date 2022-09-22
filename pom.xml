@@ -8,11 +8,13 @@
     <parent>
         <groupId>com.rubber</groupId>
         <artifactId>rubber_base_components</artifactId>
-        <version>1.1.0-ALPHA</version>
+        <version>1.2.0-ALPHA</version>
     </parent>
 
     <artifactId>rubber_app_publish</artifactId>
     <packaging>pom</packaging>
+
+
     <modules>
         <module>rubber_app_publish_core</module>
         <module>rubber_app_publish_service</module>
